@@ -21,10 +21,10 @@ A reusable UI component library built with [Fluent UI](https://developer.microso
 
 ```bash
 npm install spfx-ui-toolkit
-
-🔧 Usage
+```
+## 🔧 Usage
 Import and use the components in your SPFx React component:
-
+```
 import React, { useState } from 'react';
 import { TextInput, DropdownInput } from 'spfx-ui-toolkit';
 
@@ -57,7 +57,7 @@ const ExampleComponent = () => {
   );
 };
 
-
+```
 ## License
 
 MIT © [BharathxP](https://github.com/BharathxP)
