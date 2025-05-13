@@ -1,0 +1,1 @@
+{"version":3,"file":"index.js","sourceRoot":"../src/","sources":["next/index.ts"],"names":[],"mappings":";;;AACA,qDAA2B;AAC3B,2DAAiC;AACjC,kEAAwC;AACxC,wDAA8B","sourcesContent":["export * from './types';\nexport * from './getSlots';\nexport * from './makeMergeProps';\nexport * from './resolveShorthandProps';\nexport * from './makeClasses';\n"]}

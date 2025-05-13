@@ -1,0 +1,22 @@
+import React from "react";
+import { ITextFieldStyles } from "office-ui-fabric-react";
+export declare const TextInput: ({ label, value, onChange, placeholder, required, multiline, errorMessage, length, alphaCheck, hideLabel, isPreview, isEmailCheck, isZipCodeCheck, type, rows, Styles, disabled, isLink }: {
+    label?: string | undefined;
+    value?: string | undefined;
+    onChange: any;
+    placeholder?: string | undefined;
+    required?: boolean | undefined;
+    multiline?: boolean | undefined;
+    errorMessage?: string | undefined;
+    length?: number | undefined;
+    alphaCheck?: boolean | undefined;
+    hideLabel?: boolean | undefined;
+    isPreview?: boolean | undefined;
+    isEmailCheck?: boolean | undefined;
+    isZipCodeCheck?: boolean | undefined;
+    type?: string | undefined;
+    rows?: number | undefined;
+    Styles?: Partial<ITextFieldStyles> | undefined;
+    disabled?: boolean | undefined;
+    isLink?: boolean | undefined;
+}) => React.JSX.Element;
