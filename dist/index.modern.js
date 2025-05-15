@@ -7,39 +7,38 @@ import { GrUnsorted } from 'react-icons/gr';
 import { FaArrowUp, FaArrowDown } from 'react-icons/fa6';
 
 var emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-var zipRegex = /^\d{5}(-\d{4})?$/;
-var alphanumericRegex = /^[a-zA-Z0-9\s,.!?()@&#*_ -:']+$/i;
+var alphanumericRegex = /^[a-zA-Z0-9\s']+$/i;
 var globalDateFormat = 'MM/DD/YYYY';
 
 var textFieldStyles = {
   root: {
-    "& .ms-TextField-fieldGroup": {
-      border: "2px solid #CBD1D7 !important",
-      borderRadius: "4px",
-      borderColor: "transparent",
-      "::after": {
-        borderColor: "transparent"
+    '& .ms-TextField-fieldGroup': {
+      border: '2px solid #CBD1D7 !important',
+      borderRadius: '4px',
+      borderColor: 'transparent',
+      '::after': {
+        borderColor: 'transparent'
       },
-      ":hover": {
-        borderColor: "transparent"
+      ':hover': {
+        borderColor: 'transparent'
       }
     }
   }
 };
 var TextInput = function TextInput(_ref) {
   var _ref$label = _ref.label,
-    label = _ref$label === void 0 ? "" : _ref$label,
+    label = _ref$label === void 0 ? '' : _ref$label,
     _ref$value = _ref.value,
-    value = _ref$value === void 0 ? "" : _ref$value,
+    value = _ref$value === void 0 ? '' : _ref$value,
     onChange = _ref.onChange,
     _ref$placeholder = _ref.placeholder,
-    placeholder = _ref$placeholder === void 0 ? "" : _ref$placeholder,
+    placeholder = _ref$placeholder === void 0 ? '' : _ref$placeholder,
     _ref$required = _ref.required,
     required = _ref$required === void 0 ? true : _ref$required,
     _ref$multiline = _ref.multiline,
     multiline = _ref$multiline === void 0 ? false : _ref$multiline,
     _ref$errorMessage = _ref.errorMessage,
-    errorMessage = _ref$errorMessage === void 0 ? "" : _ref$errorMessage,
+    errorMessage = _ref$errorMessage === void 0 ? '' : _ref$errorMessage,
     _ref$length = _ref.length,
     length = _ref$length === void 0 ? 200 : _ref$length,
     _ref$alphaCheck = _ref.alphaCheck,
@@ -50,10 +49,8 @@ var TextInput = function TextInput(_ref) {
     isPreview = _ref$isPreview === void 0 ? false : _ref$isPreview,
     _ref$isEmailCheck = _ref.isEmailCheck,
     isEmailCheck = _ref$isEmailCheck === void 0 ? false : _ref$isEmailCheck,
-    _ref$isZipCodeCheck = _ref.isZipCodeCheck,
-    isZipCodeCheck = _ref$isZipCodeCheck === void 0 ? false : _ref$isZipCodeCheck,
-    _ref$type = _ref.type,
-    type = _ref$type === void 0 ? "text" : _ref$type,
+    _ref$input = _ref.input,
+    input = _ref$input === void 0 ? 'text' : _ref$input,
     _ref$rows = _ref.rows,
     rows = _ref$rows === void 0 ? 1 : _ref$rows,
     _ref$Styles = _ref.Styles,
@@ -77,16 +74,16 @@ var TextInput = function TextInput(_ref) {
         setError("This field must be alphanumeric");
         setShowError(true);
         setTimeout(function () {
-          setError("");
+          setError('');
           setShowError(false);
         }, 2000);
       } else {
-        setError("");
+        setError('');
         setShowError(false);
         onChange(newValue);
       }
     } else {
-      setError("");
+      setError('');
       setShowError(false);
       onChange(newValue);
     }
@@ -94,12 +91,10 @@ var TextInput = function TextInput(_ref) {
   React.useEffect(function () {
     if (value) {
       if (!emailRegex.test(value) && isEmailCheck) {
-        setError("Email is in invalid format");
-      } else if (!zipRegex.test(value) && isZipCodeCheck) {
-        setError("Invalid Zip Code");
+        setError('Email is in invalid format');
       } else {
-        errorMessage = "";
-        setError("");
+        errorMessage = '';
+        setError('');
       }
     } else {
       setError(errorMessage);
@@ -117,10 +112,10 @@ var TextInput = function TextInput(_ref) {
       color: '#475055'
     },
     required: required
-  }, label) : null, isPreview ? React.createElement(React.Fragment, null, multiline ? React.createElement(React.Fragment, null, React.createElement("span", null, (value === null || value === void 0 ? void 0 : value.replaceAll(decodeURIComponent("%0A"), "<br>")) || "")) : React.createElement("span", null, isLink ? React.createElement("a", {
+  }, label) : null, isPreview ? React.createElement(React.Fragment, null, multiline ? React.createElement(React.Fragment, null, React.createElement("span", null, (value === null || value === void 0 ? void 0 : value.replaceAll(decodeURIComponent('%0A'), '<br>')) || '')) : React.createElement("span", null, isLink ? React.createElement("a", {
     href: value !== null && value !== void 0 && value.startsWith('http://') || value !== null && value !== void 0 && value.startsWith('https://') ? value : "https://" + value,
-    target: "_blank",
-    rel: "noopener noreferrer",
+    target: '_blank',
+    rel: 'noopener noreferrer',
     style: {
       cursor: 'pointer',
       textDecoration: 'underline',
@@ -133,11 +128,11 @@ var TextInput = function TextInput(_ref) {
     validateOnLoad: false,
     onChange: handleChange,
     style: {
-      border: "none !important"
+      border: 'none !important'
     },
     disabled: disabled,
     multiline: multiline,
-    type: type,
+    type: input,
     rows: rows
   }), (showError || error) && React.createElement("div", {
     style: {
@@ -151,7 +146,7 @@ var TextInput = function TextInput(_ref) {
     style: {
       marginTop: '2px'
     },
-    iconName: "IncidentTriangle"
+    iconName: 'IncidentTriangle'
   }), React.createElement("span", null, error || errorMessage))));
 };
 
@@ -198,9 +193,11 @@ var datePickerStyle = {
 var DateInput = function DateInput(_ref) {
   var _ref$label = _ref.label,
     label = _ref$label === void 0 ? '' : _ref$label,
-    value = _ref.value,
+    _ref$value = _ref.value,
+    value = _ref$value === void 0 ? '' : _ref$value,
     onChange = _ref.onChange,
-    placeholder = _ref.placeholder,
+    _ref$placeholder = _ref.placeholder,
+    placeholder = _ref$placeholder === void 0 ? '' : _ref$placeholder,
     _ref$required = _ref.required,
     required = _ref$required === void 0 ? true : _ref$required,
     _ref$errorMessage = _ref.errorMessage,
@@ -305,9 +302,13 @@ var PeoplePickerInput = function PeoplePickerInput(_ref) {
     _ref$hideLabel = _ref.hideLabel,
     hideLabel = _ref$hideLabel === void 0 ? false : _ref$hideLabel,
     _ref$maxSelections = _ref.maxSelections,
-    maxSelections = _ref$maxSelections === void 0 ? 3 : _ref$maxSelections,
+    maxSelections = _ref$maxSelections === void 0 ? 1 : _ref$maxSelections,
     _ref$disabled = _ref.disabled,
     disabled = _ref$disabled === void 0 ? false : _ref$disabled,
+    _ref$Styles = _ref.Styles,
+    Styles = _ref$Styles === void 0 ? peoplePickerStyles : _ref$Styles,
+    _ref$placeholder = _ref.placeholder,
+    placeholder = _ref$placeholder === void 0 ? 'Enter Name/Email here' : _ref$placeholder,
     context = _ref.context;
   var _useState = useState(errorMessage),
     error = _useState[0],
@@ -327,6 +328,10 @@ var PeoplePickerInput = function PeoplePickerInput(_ref) {
       setError('');
       setShowError(false);
     }
+    setTimeout(function () {
+      setError('');
+      setShowError(false);
+    }, 1000);
     onChange(items);
   };
   React.useEffect(function () {
@@ -347,7 +352,7 @@ var PeoplePickerInput = function PeoplePickerInput(_ref) {
     }, person.text || person.displayName || (person === null || person === void 0 ? void 0 : person.Title));
   }) : React.createElement("span", null)) : React.createElement(React.Fragment, null, React.createElement(PeoplePicker, {
     context: context,
-    placeholder: 'Enter Name/Email here',
+    placeholder: placeholder,
     ensureUser: true,
     personSelectionLimit: maxSelections,
     required: required,
@@ -358,7 +363,7 @@ var PeoplePickerInput = function PeoplePickerInput(_ref) {
     showtooltip: false,
     disabled: disabled,
     resolveDelay: 1000,
-    styles: peoplePickerStyles,
+    styles: Styles,
     principalTypes: [PrincipalType.User]
   }), showError && React.createElement("div", {
     style: {
@@ -380,6 +385,8 @@ var DropDownSelect = function DropDownSelect(_ref) {
   var label = _ref.label,
     options = _ref.options,
     selectedKey = _ref.selectedKey,
+    _ref$placeholder = _ref.placeholder,
+    placeholder = _ref$placeholder === void 0 ? '' : _ref$placeholder,
     onChange = _ref.onChange,
     required = _ref.required,
     _ref$errorMessage = _ref.errorMessage,
@@ -387,7 +394,9 @@ var DropDownSelect = function DropDownSelect(_ref) {
     _ref$isPreview = _ref.isPreview,
     isPreview = _ref$isPreview === void 0 ? false : _ref$isPreview,
     _ref$disabled = _ref.disabled,
-    disabled = _ref$disabled === void 0 ? false : _ref$disabled;
+    disabled = _ref$disabled === void 0 ? false : _ref$disabled,
+    _ref$hideLabel = _ref.hideLabel,
+    hideLabel = _ref$hideLabel === void 0 ? false : _ref$hideLabel;
   var _React$useState = React.useState(errorMessage),
     error = _React$useState[0],
     setError = _React$useState[1];
@@ -410,18 +419,18 @@ var DropDownSelect = function DropDownSelect(_ref) {
       setShowError(true);
     }
   }, [errorMessage]);
-  return React.createElement("div", null, React.createElement(Label, {
+  return React.createElement("div", null, !hideLabel ? React.createElement(Label, {
     style: {
       fontSize: '13px',
       color: '#475055'
     },
     required: required
-  }, label), isPreview ? React.createElement("span", null, selectedKey) : React.createElement(React.Fragment, null, React.createElement(Dropdown, {
+  }, label) : null, isPreview ? React.createElement("span", null, selectedKey) : React.createElement(React.Fragment, null, React.createElement(Dropdown, {
     selectedKey: selectedKey,
     onChange: function onChange(_event, option) {
       return handleChange(option);
     },
-    placeholder: 'Select an option',
+    placeholder: placeholder,
     options: options,
     className: 'ToolKitDropDown',
     disabled: disabled
@@ -482,8 +491,8 @@ var MultiSelectCheckbox = function MultiSelectCheckbox(_ref) {
     isPreview = _ref$isPreview === void 0 ? false : _ref$isPreview,
     _ref$hideLabel = _ref.hideLabel,
     hideLabel = _ref$hideLabel === void 0 ? false : _ref$hideLabel,
-    _ref$Style = _ref.Style,
-    Style = _ref$Style === void 0 ? checkboxStyles : _ref$Style,
+    _ref$Styles = _ref.Styles,
+    Styles = _ref$Styles === void 0 ? checkboxStyles : _ref$Styles,
     _ref$orientation = _ref.orientation,
     orientation = _ref$orientation === void 0 ? 'horizontal' : _ref$orientation;
   var _React$useState = React.useState(errorMessage),
@@ -550,7 +559,7 @@ var MultiSelectCheckbox = function MultiSelectCheckbox(_ref) {
     }, React.createElement(Checkbox, {
       key: option.key,
       label: option.text,
-      styles: Style,
+      styles: Styles,
       checked: selectedKeys === null || selectedKeys === void 0 ? void 0 : selectedKeys.includes(option.key),
       onChange: function onChange() {
         return handleChange(option);
@@ -574,55 +583,53 @@ var MultiSelectCheckbox = function MultiSelectCheckbox(_ref) {
 
 var choiceGroupStyles = {
   root: {
-    ".ms-ChoiceField": {
-      padding: "0px 15px 0px 0px"
+    '.ms-ChoiceField': {
+      padding: '0px 15px 0px 0px'
     },
-    flex: "0 1 25%",
-    "label::after": {
-      borderColor: "#3258D2 !important"
+    flex: '0 1 25%',
+    'label::after': {
+      borderColor: '#3258D2 !important'
     },
-    "label:hover::after": {
-      color: "#3258D2 !important",
-      borderColor: "#3258D2 !important"
+    'label:hover::after': {
+      color: '#3258D2 !important',
+      borderColor: '#3258D2 !important'
     },
-    "label::before": {
-      color: "#3258D2 !important",
-      borderColor: "#3258D2 !important"
+    'label::before': {
+      color: '#3258D2 !important',
+      borderColor: '#3258D2 !important'
     },
-    "label:hover::before": {
-      color: "#3258D2 !important",
-      borderColor: "#3258D2 !important"
+    'label:hover::before': {
+      color: '#3258D2 !important',
+      borderColor: '#3258D2 !important'
     }
   },
   label: {
-    fontSize: "13px !important",
-    color: "#475055 !important"
+    fontSize: '13px !important',
+    color: '#475055 !important'
   },
   flexContainer: {
-    display: "inline-flex",
-    margin: "-7px 0px 0px 0px"
+    display: 'inline-flex',
+    margin: '-7px 0px 0px 0px'
   }
 };
 var RadioButtonGroup = function RadioButtonGroup(_ref) {
   var _ref$label = _ref.label,
-    label = _ref$label === void 0 ? "" : _ref$label,
+    label = _ref$label === void 0 ? '' : _ref$label,
     options = _ref.options,
     selectedKey = _ref.selectedKey,
     onChange = _ref.onChange,
     _ref$required = _ref.required,
     required = _ref$required === void 0 ? true : _ref$required,
     _ref$errorMessage = _ref.errorMessage,
-    errorMessage = _ref$errorMessage === void 0 ? "" : _ref$errorMessage,
+    errorMessage = _ref$errorMessage === void 0 ? '' : _ref$errorMessage,
     _ref$isPreview = _ref.isPreview,
     isPreview = _ref$isPreview === void 0 ? false : _ref$isPreview,
     _ref$hideLabel = _ref.hideLabel,
     hideLabel = _ref$hideLabel === void 0 ? false : _ref$hideLabel,
     _ref$resetOnDataSelec = _ref.resetOnDataSelected,
     resetOnDataSelected = _ref$resetOnDataSelec === void 0 ? false : _ref$resetOnDataSelec,
-    _ref$resetCheckBoxLis = _ref.resetCheckBoxList,
-    resetCheckBoxList = _ref$resetCheckBoxLis === void 0 ? function (val) {
-      console.log(val);
-    } : _ref$resetCheckBoxLis;
+    _ref$Styles = _ref.Styles,
+    Styles = _ref$Styles === void 0 ? choiceGroupStyles : _ref$Styles;
   var _React$useState = React.useState(errorMessage),
     error = _React$useState[0],
     setError = _React$useState[1];
@@ -631,14 +638,13 @@ var RadioButtonGroup = function RadioButtonGroup(_ref) {
     setShowError = _React$useState2[1];
   var handleChange = function handleChange(option) {
     if (!option) {
-      setError("Selection is required.");
+      setError('Selection is required.');
       setShowError(true);
     } else {
-      setError("");
+      setError('');
       setShowError(false);
-      if (resetOnDataSelected && option.key == "No Data Collected") {
+      if (resetOnDataSelected && option.key == 'No Data Collected') {
         onChange(option.key);
-        resetCheckBoxList([]);
       } else {
         onChange(option.key);
       }
@@ -659,7 +665,7 @@ var RadioButtonGroup = function RadioButtonGroup(_ref) {
   }, label) : null, isPreview ? React.createElement("span", null, selectedKey) : React.createElement(React.Fragment, null, React.createElement(ChoiceGroup, {
     selectedKey: selectedKey,
     options: options,
-    styles: choiceGroupStyles,
+    styles: Styles,
     onChange: function onChange(_event, option) {
       return handleChange(option);
     },
@@ -676,7 +682,7 @@ var RadioButtonGroup = function RadioButtonGroup(_ref) {
     style: {
       marginTop: '2px'
     },
-    iconName: "IncidentTriangle"
+    iconName: 'IncidentTriangle'
   }), React.createElement("span", null, error))));
 };
 
@@ -27808,5 +27814,160 @@ var AgGridCustomFilter = function AgGridCustomFilter(props) {
   }, "Clear All"))), document.body));
 };
 
-export { AgGridCustomFilter, Button, DateInput, DropDownSelect, MultiSelectCheckbox, PeoplePickerInput, RadioButtonGroup, TextInput };
+function _extends() {
+  return _extends = Object.assign ? Object.assign.bind() : function (n) {
+    for (var e = 1; e < arguments.length; e++) {
+      var t = arguments[e];
+      for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]);
+    }
+    return n;
+  }, _extends.apply(null, arguments);
+}
+
+var DynamicForm = function DynamicForm(_ref) {
+  var context = _ref.context,
+    _ref$fields = _ref.fields,
+    fields = _ref$fields === void 0 ? [] : _ref$fields,
+    formData = _ref.formData,
+    setFormData = _ref.setFormData,
+    _ref$grid = _ref.grid,
+    grid = _ref$grid === void 0 ? 3 : _ref$grid;
+  var gridTemplate = "repeat(" + grid + ", 1fr)";
+  var handleChange = function handleChange(fieldId, newValue) {
+    setFormData(function (prev) {
+      var _extends2;
+      return _extends({}, prev, (_extends2 = {}, _extends2[fieldId] = newValue, _extends2));
+    });
+  };
+  return React.createElement("div", {
+    style: {
+      display: 'grid',
+      gridTemplateColumns: gridTemplate,
+      gap: '16px',
+      alignItems: 'start'
+    }
+  }, fields.map(function (field) {
+    var _formData$field$id;
+    var value = (_formData$field$id = formData[field.id]) != null ? _formData$field$id : '';
+    switch (field.type) {
+      case 'Text':
+        return React.createElement("div", {
+          key: field.id
+        }, React.createElement(TextInput, {
+          label: field.label,
+          required: field.required,
+          value: value,
+          length: field.length,
+          Styles: field.Styles,
+          input: field.input,
+          hideLabel: field.hideLabel,
+          placeholder: field.placeholder,
+          multiline: field.multiline,
+          rows: field.rows,
+          errorMessage: field.errorMessage,
+          alphaCheck: field.alphaCheck,
+          isEmailCheck: field.isEmailCheck,
+          isPreview: field.isPreview,
+          disabled: field.disabled,
+          onChange: function onChange(val) {
+            return handleChange(field.id, val);
+          },
+          isLink: field.isLink
+        }));
+      case 'Date':
+        return React.createElement("div", {
+          key: field.id
+        }, React.createElement(DateInput, {
+          label: field.label,
+          value: value,
+          required: field.required,
+          onChange: function onChange(val) {
+            return handleChange(field.id, val);
+          },
+          disabled: field.disabled,
+          placeholder: field.placeholder,
+          errorMessage: field.errorMessage,
+          isPreview: field.isPreview,
+          hideLabel: field.hideLabel,
+          Styles: field.Styles,
+          minDate: field.minDate,
+          maxDate: field.maxDate
+        }));
+      case 'PeoplePicker':
+        return React.createElement("div", {
+          key: field.id
+        }, React.createElement(PeoplePickerInput, {
+          label: field.label,
+          required: field.required,
+          selectedPeople: value || [],
+          onChange: function onChange(val) {
+            return handleChange(field.id, val);
+          },
+          disabled: field.disabled,
+          maxSelections: field.maxSelections,
+          context: context,
+          errorMessage: field.errorMessage,
+          isPreview: field.isPreview,
+          hideLabel: field.hideLabel,
+          Styles: field.Styles,
+          placeholder: field.placeholder
+        }));
+      case 'Checkbox':
+        return React.createElement("div", {
+          key: field.id
+        }, React.createElement(MultiSelectCheckbox, {
+          label: field.label,
+          options: field.options || [],
+          selectedKeys: value,
+          onChange: function onChange(val) {
+            return handleChange(field.id, val);
+          },
+          errorMessage: field.errorMessage,
+          isPreview: field.isPreview,
+          hideLabel: field.hideLabel,
+          Styles: field.Styles,
+          orientation: field.orientation,
+          required: field.required
+        }));
+      case 'Radio':
+        return React.createElement("div", {
+          key: field.id
+        }, React.createElement(RadioButtonGroup, {
+          label: field.label,
+          options: field.options || [],
+          selectedKey: value,
+          onChange: function onChange(val) {
+            return handleChange(field.id, val);
+          },
+          errorMessage: field.errorMessage,
+          isPreview: field.isPreview,
+          hideLabel: field.hideLabel,
+          Styles: field.Styles,
+          required: false,
+          resetOnDataSelected: field.resetOnDataSelected
+        }));
+      case 'Dropdown':
+        return React.createElement("div", {
+          key: field.id
+        }, React.createElement(DropDownSelect, {
+          label: field.label,
+          options: field.options || [],
+          selectedKey: value,
+          placeholder: field.placeholder,
+          required: field.required,
+          disabled: field.disabled,
+          onChange: function onChange(val) {
+            return handleChange(field.id, val);
+          },
+          errorMessage: field.errorMessage,
+          isPreview: field.isPreview,
+          hideLabel: field.hideLabel
+        }));
+      default:
+        return null;
+    }
+  }));
+};
+
+export { AgGridCustomFilter, Button, DateInput, DropDownSelect, DynamicForm, MultiSelectCheckbox, PeoplePickerInput, RadioButtonGroup, TextInput };
 //# sourceMappingURL=index.modern.js.map

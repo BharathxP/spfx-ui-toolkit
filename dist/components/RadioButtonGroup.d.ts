@@ -1,13 +1,15 @@
 import React from 'react';
-export declare const RadioButtonGroup: ({ label, options, selectedKey, onChange, required, errorMessage, isPreview, hideLabel, resetOnDataSelected, resetCheckBoxList, }: {
-    label?: string | undefined;
+interface RadioButtonGroupProps {
+    label: string;
     options: any;
     selectedKey: any;
     onChange: any;
-    required?: boolean | undefined;
-    errorMessage?: string | undefined;
-    isPreview?: boolean | undefined;
-    hideLabel?: boolean | undefined;
-    resetOnDataSelected?: boolean | undefined;
-    resetCheckBoxList?: ((val: any[]) => void) | undefined;
-}) => React.JSX.Element;
+    required: boolean;
+    errorMessage: string;
+    isPreview: boolean;
+    hideLabel: boolean;
+    resetOnDataSelected: boolean;
+    Styles: any;
+}
+export declare const RadioButtonGroup: React.FC<RadioButtonGroupProps>;
+export {};

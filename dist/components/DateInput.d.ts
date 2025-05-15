@@ -1,16 +1,17 @@
-import { IDatePickerStyles } from 'office-ui-fabric-react';
 import React from 'react';
-export declare const DateInput: ({ label, value, onChange, placeholder, required, errorMessage, isPreview, hideLabel, Styles, disabled, minDate, maxDate }: {
-    label?: string | undefined;
+interface DateInputProps {
+    label: string;
     value: any;
     onChange: any;
-    placeholder: any;
-    required?: boolean | undefined;
-    errorMessage?: string | undefined;
-    isPreview?: boolean | undefined;
-    hideLabel?: boolean | undefined;
-    Styles?: Partial<IDatePickerStyles> | undefined;
-    disabled?: boolean | undefined;
-    minDate?: undefined;
-    maxDate?: undefined;
-}) => React.JSX.Element;
+    placeholder: string;
+    required: boolean;
+    errorMessage: string;
+    isPreview: boolean;
+    hideLabel: boolean;
+    Styles: any;
+    disabled: boolean;
+    minDate: any;
+    maxDate: any;
+}
+export declare const DateInput: React.FC<DateInputProps>;
+export {};

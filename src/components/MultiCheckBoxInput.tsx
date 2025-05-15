@@ -30,7 +30,19 @@ const checkboxStyles: ICheckboxStyles = {
 }
 
 // MultiSelectCheckbox Component
-export const MultiSelectCheckbox = ({
+interface MultiCheckBoxInputProps {
+  label: string
+  options: any
+  selectedKeys: any
+  onChange: any
+  required: boolean
+  errorMessage: string
+  isPreview: boolean
+  hideLabel: boolean
+  Styles: any
+  orientation: any
+}
+export const MultiSelectCheckbox: React.FC<MultiCheckBoxInputProps> = ({
   label = '',
   options,
   selectedKeys,
@@ -39,7 +51,7 @@ export const MultiSelectCheckbox = ({
   errorMessage = '',
   isPreview = false,
   hideLabel = false,
-  Style = checkboxStyles,
+  Styles = checkboxStyles,
   orientation = 'horizontal'
 }) => {
   const [error, setError] = React.useState(errorMessage)
@@ -117,7 +129,7 @@ export const MultiSelectCheckbox = ({
                 <Checkbox
                   key={option.key}
                   label={option.text}
-                  styles={Style}
+                  styles={Styles}
                   checked={selectedKeys?.includes(option.key)}
                   onChange={() => handleChange(option)}
                 />

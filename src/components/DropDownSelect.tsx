@@ -2,16 +2,30 @@
 import { Label, Icon, Dropdown } from 'office-ui-fabric-react'
 import React from 'react'
 
-export const DropDownSelect = ({
+interface DropDownSelectProps {
+  label: string
+  options: any
+  selectedKey: any
+  placeholder: string
+  onChange: any
+  required: boolean
+  errorMessage: string
+  isPreview: boolean
+  disabled: boolean
+  hideLabel: boolean
+}
+
+export const DropDownSelect: React.FC<DropDownSelectProps> = ({
   label,
   options,
   selectedKey,
-  placeholder='',
+  placeholder = '',
   onChange,
   required,
   errorMessage = '',
   isPreview = false,
-  disabled = false
+  disabled = false,
+  hideLabel = false
 }) => {
   const [error, setError] = React.useState(errorMessage)
   const [showError, setShowError] = React.useState(!!errorMessage)
@@ -36,9 +50,14 @@ export const DropDownSelect = ({
 
   return (
     <div>
-      <Label style={{ fontSize: '13px', color: '#475055' }} required={required}>
-        {label}
-      </Label>
+      {!hideLabel ? (
+        <Label
+          style={{ fontSize: '13px', color: '#475055' }}
+          required={required}
+        >
+          {label}
+        </Label>
+      ) : null}
       {isPreview ? (
         <span>{selectedKey}</span>
       ) : (

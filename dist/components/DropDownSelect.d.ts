@@ -1,11 +1,15 @@
 import React from 'react';
-export declare const DropDownSelect: ({ label, options, selectedKey, onChange, required, errorMessage, isPreview, disabled }: {
-    label: any;
+interface DropDownSelectProps {
+    label: string;
     options: any;
     selectedKey: any;
+    placeholder: string;
     onChange: any;
-    required: any;
-    errorMessage?: string | undefined;
-    isPreview?: boolean | undefined;
-    disabled?: boolean | undefined;
-}) => React.JSX.Element;
+    required: boolean;
+    errorMessage: string;
+    isPreview: boolean;
+    disabled: boolean;
+    hideLabel: boolean;
+}
+export declare const DropDownSelect: React.FC<DropDownSelectProps>;
+export {};

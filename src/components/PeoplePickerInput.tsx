@@ -27,8 +27,23 @@ const peoplePickerStyles: Partial<IBasePickerStyles> = {
   }
 }
 
+interface PeoplePickerInputProps {
+  context: any
+  label: string
+  selectedPeople: []
+  onChange: any
+  required: boolean
+  errorMessage: string
+  isPreview: boolean
+  hideLabel: boolean
+  maxSelections: number
+  disabled: boolean
+  Styles: any
+  placeholder: string
+}
+
 // PeoplePicker Component
-export const PeoplePickerInput = ({
+export const PeoplePickerInput: React.FC<PeoplePickerInputProps> = ({
   label = '',
   selectedPeople = [],
   onChange,
@@ -36,8 +51,10 @@ export const PeoplePickerInput = ({
   errorMessage = '',
   isPreview = false,
   hideLabel = false,
-  maxSelections = 3,
+  maxSelections = 1,
   disabled = false,
+  Styles = peoplePickerStyles,
+  placeholder = 'Enter Name/Email here',
   context
 }) => {
   const [error, setError] = useState(errorMessage)
@@ -55,6 +72,10 @@ export const PeoplePickerInput = ({
       setError('')
       setShowError(false)
     }
+    setTimeout(() => {
+      setError('')
+      setShowError(false)
+    }, 1000)
     onChange(items)
   }
 
@@ -91,7 +112,7 @@ export const PeoplePickerInput = ({
         <React.Fragment>
           <PeoplePicker
             context={context}
-            placeholder={'Enter Name/Email here'}
+            placeholder={placeholder}
             ensureUser={true}
             personSelectionLimit={maxSelections}
             required={required}
@@ -102,7 +123,7 @@ export const PeoplePickerInput = ({
             showtooltip={false}
             disabled={disabled}
             resolveDelay={1000}
-            styles={peoplePickerStyles}
+            styles={Styles}
             principalTypes={[PrincipalType.User]}
           ></PeoplePicker>
           {showError && (

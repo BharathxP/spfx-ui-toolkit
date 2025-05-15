@@ -7,41 +7,54 @@ import { RadioButtonGroup } from './RadioButtonGroup'
 import { DropDownSelect } from './DropDownSelect'
 
 interface FormFieldConfig {
-  id: string;
-  type: "Text" | "Date" | "PeoplePicker" | "Checkbox" | "Radio" | "Dropdown";
-  label: string;
-  required?: boolean;
-  placeholder?: string;
-  options?: { key: string; text: string }[];
-  value?: any;
-  defaultValue?: any;
-  disabled?: boolean;
-  multiline?: boolean;
-  rows?: number;
-  errorMessage?: string;
-  alphaCheck?: boolean;
-  isEmailCheck?: boolean;
-  isZipCodeCheck?: boolean;
-  isPreview?: boolean;
-  isLink?: boolean;
+  id: string
+  type: 'Text' | 'Date' | 'PeoplePicker' | 'Checkbox' | 'Radio' | 'Dropdown'
+  label: string
+  required?: boolean
+  placeholder?: string
+  options?: { key: string; text: string }[]
+  disabled?: boolean
+  multiline?: boolean
+  rows?: number
+  errorMessage?: string
+  length?: number
+  alphaCheck?: boolean
+  hideLabel?: boolean
+  isEmailCheck?: boolean
+  input?: string
+  isPreview?: boolean
+  isLink?: boolean
+  Styles?: any
+  maxSelections?: number
+  minDate: any
+  maxDate: any
+  orientation: string
+  resetOnDataSelected: boolean
 }
 
 interface DynamicFormProps {
-  fields: FormFieldConfig[]
-  setFields: React.Dispatch<React.SetStateAction<FormFieldConfig[]>>;
-  row?: number // number of columns per row
+  context: any
+  fields: FormFieldConfig[] | any
+  formData: { [key: string]: any }
+  setFormData: React.Dispatch<React.SetStateAction<{ [key: string]: any }>>
+  grid?: number // number of columns per row
 }
 
-export const DynamicForm: React.FC<DynamicFormProps> = ({ fields, setFields, row = 3 }) => {
-  const gridTemplate = `repeat(${row}, 1fr)`
+export const DynamicForm: React.FC<DynamicFormProps> = ({
+  context,
+  fields = [],
+  formData,
+  setFormData,
+  grid = 3
+}) => {
+  const gridTemplate = `repeat(${grid}, 1fr)`
 
   const handleChange = (fieldId: string, newValue: any) => {
-    setFields(prev =>
-      prev.map(field =>
-        field.id === fieldId ? { ...field, value: newValue } : field
-      )
-    );
-  };
+    setFormData((prev) => ({
+      ...prev,
+      [fieldId]: newValue
+    }))
+  }
 
   return (
     <div
@@ -52,7 +65,8 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({ fields, setFields, row
         alignItems: 'start'
       }}
     >
-      {fields.map((field) => {
+      {fields.map((field: any) => {
+        const value = formData[field.id] ?? ''
         switch (field.type) {
           case 'Text':
             return (
@@ -60,17 +74,21 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({ fields, setFields, row
                 <TextInput
                   label={field.label}
                   required={field.required}
-                  value={field.value}
+                  value={value}
+                  length={field.length}
+                  Styles={field.Styles}
+                  input={field.input}
+                  hideLabel={field.hideLabel}
                   placeholder={field.placeholder}
                   multiline={field.multiline}
                   rows={field.rows}
                   errorMessage={field.errorMessage}
                   alphaCheck={field.alphaCheck}
                   isEmailCheck={field.isEmailCheck}
-                  isZipCodeCheck={field.isZipCodeCheck}
                   isPreview={field.isPreview}
                   disabled={field.disabled}
                   onChange={(val) => handleChange(field.id, val)}
+                  isLink={field.isLink}
                 />
               </div>
             )
@@ -80,11 +98,17 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({ fields, setFields, row
               <div key={field.id}>
                 <DateInput
                   label={field.label}
-                  value={field.value}
+                  value={value}
                   required={field.required}
                   onChange={(val) => handleChange(field.id, val)}
                   disabled={field.disabled}
-                  placeholder={''}
+                  placeholder={field.placeholder}
+                  errorMessage={field.errorMessage}
+                  isPreview={field.isPreview}
+                  hideLabel={field.hideLabel}
+                  Styles={field.Styles}
+                  minDate={field.minDate}
+                  maxDate={field.maxDate}
                 />
               </div>
             )
@@ -95,10 +119,16 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({ fields, setFields, row
                 <PeoplePickerInput
                   label={field.label}
                   required={field.required}
-                  selectedPeople={field.value}
+                  selectedPeople={value || []}
                   onChange={(val) => handleChange(field.id, val)}
                   disabled={field.disabled}
-                  context={undefined}
+                  maxSelections={field.maxSelections}
+                  context={context}
+                  errorMessage={field.errorMessage}
+                  isPreview={field.isPreview}
+                  hideLabel={field.hideLabel}
+                  Styles={field.Styles}
+                  placeholder={field.placeholder}
                 />
               </div>
             )
@@ -109,8 +139,14 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({ fields, setFields, row
                 <MultiSelectCheckbox
                   label={field.label}
                   options={field.options || []}
-                  selectedKeys={field.value}
+                  selectedKeys={value}
                   onChange={(val) => handleChange(field.id, val)}
+                  errorMessage={field.errorMessage}
+                  isPreview={field.isPreview}
+                  hideLabel={field.hideLabel}
+                  Styles={field.Styles}
+                  orientation={field.orientation}
+                  required={field.required}
                 />
               </div>
             )
@@ -121,8 +157,14 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({ fields, setFields, row
                 <RadioButtonGroup
                   label={field.label}
                   options={field.options || []}
-                  selectedKey={field.value}
+                  selectedKey={value}
                   onChange={(val) => handleChange(field.id, val)}
+                  errorMessage={field.errorMessage}
+                  isPreview={field.isPreview}
+                  hideLabel={field.hideLabel}
+                  Styles={field.Styles}
+                  required={false}
+                  resetOnDataSelected={field.resetOnDataSelected}
                 />
               </div>
             )
@@ -133,11 +175,14 @@ export const DynamicForm: React.FC<DynamicFormProps> = ({ fields, setFields, row
                 <DropDownSelect
                   label={field.label}
                   options={field.options || []}
-                  selectedKey={field.value}
+                  selectedKey={value}
                   placeholder={field.placeholder}
                   required={field.required}
                   disabled={field.disabled}
                   onChange={(val) => handleChange(field.id, val)}
+                  errorMessage={field.errorMessage}
+                  isPreview={field.isPreview}
+                  hideLabel={field.hideLabel}
                 />
               </div>
             )

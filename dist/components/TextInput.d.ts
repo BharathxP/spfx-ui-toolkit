@@ -1,22 +1,22 @@
-import React from "react";
-import { ITextFieldStyles } from "office-ui-fabric-react";
-export declare const TextInput: ({ label, value, onChange, placeholder, required, multiline, errorMessage, length, alphaCheck, hideLabel, isPreview, isEmailCheck, isZipCodeCheck, type, rows, Styles, disabled, isLink }: {
-    label?: string | undefined;
-    value?: string | undefined;
+import React from 'react';
+interface TextInputProps {
+    label: string;
+    value: any;
+    multiline: boolean;
     onChange: any;
-    placeholder?: string | undefined;
-    required?: boolean | undefined;
-    multiline?: boolean | undefined;
-    errorMessage?: string | undefined;
-    length?: number | undefined;
-    alphaCheck?: boolean | undefined;
-    hideLabel?: boolean | undefined;
-    isPreview?: boolean | undefined;
-    isEmailCheck?: boolean | undefined;
-    isZipCodeCheck?: boolean | undefined;
-    type?: string | undefined;
-    rows?: number | undefined;
-    Styles?: Partial<ITextFieldStyles> | undefined;
-    disabled?: boolean | undefined;
-    isLink?: boolean | undefined;
-}) => React.JSX.Element;
+    length: number;
+    isEmailCheck: boolean;
+    alphaCheck: boolean;
+    required: boolean;
+    input: string;
+    rows: number;
+    isLink: boolean;
+    errorMessage: string;
+    isPreview: boolean;
+    hideLabel: boolean;
+    disabled: boolean;
+    Styles: any;
+    placeholder: string;
+}
+export declare const TextInput: React.FC<TextInputProps>;
+export {};
