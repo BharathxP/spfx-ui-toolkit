@@ -81,7 +81,7 @@ export const RadioButtonGroup = ({
         {isPreview ? (
           <span>{selectedKey}</span>
         ) : (
-          <>
+          <React.Fragment>
             <ChoiceGroup
               selectedKey={selectedKey}
               options={options}
@@ -101,7 +101,7 @@ export const RadioButtonGroup = ({
                 <span>{error}</span>
               </div>
             )}
-          </>
+          </React.Fragment>
         )}
       </div>
     );
