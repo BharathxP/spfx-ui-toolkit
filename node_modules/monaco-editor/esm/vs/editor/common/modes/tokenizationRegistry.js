@@ -4,76 +4,83 @@
  *--------------------------------------------------------------------------------------------*/
 import { Emitter } from '../../../base/common/event.js';
 import { toDisposable } from '../../../base/common/lifecycle.js';
-export class TokenizationRegistryImpl {
-    constructor() {
+import { withUndefinedAsNull } from '../../../base/common/types.js';
+import { keys } from '../../../base/common/map.js';
+var TokenizationRegistryImpl = /** @class */ (function () {
+    function TokenizationRegistryImpl() {
         this._map = new Map();
         this._promises = new Map();
         this._onDidChange = new Emitter();
         this.onDidChange = this._onDidChange.event;
         this._colorMap = null;
     }
-    fire(languages) {
+    TokenizationRegistryImpl.prototype.fire = function (languages) {
         this._onDidChange.fire({
             changedLanguages: languages,
             changedColorMap: false
         });
-    }
-    register(language, support) {
+    };
+    TokenizationRegistryImpl.prototype.register = function (language, support) {
+        var _this = this;
         this._map.set(language, support);
         this.fire([language]);
-        return toDisposable(() => {
-            if (this._map.get(language) !== support) {
+        return toDisposable(function () {
+            if (_this._map.get(language) !== support) {
                 return;
             }
-            this._map.delete(language);
-            this.fire([language]);
+            _this._map.delete(language);
+            _this.fire([language]);
         });
-    }
-    registerPromise(language, supportPromise) {
-        let registration = null;
-        let isDisposed = false;
-        this._promises.set(language, supportPromise.then(support => {
-            this._promises.delete(language);
+    };
+    TokenizationRegistryImpl.prototype.registerPromise = function (language, supportPromise) {
+        var _this = this;
+        var registration = null;
+        var isDisposed = false;
+        this._promises.set(language, supportPromise.then(function (support) {
+            _this._promises.delete(language);
             if (isDisposed || !support) {
                 return;
             }
-            registration = this.register(language, support);
+            registration = _this.register(language, support);
         }));
-        return toDisposable(() => {
+        return toDisposable(function () {
             isDisposed = true;
             if (registration) {
                 registration.dispose();
             }
         });
-    }
-    getPromise(language) {
-        const support = this.get(language);
+    };
+    TokenizationRegistryImpl.prototype.getPromise = function (language) {
+        var _this = this;
+        var support = this.get(language);
         if (support) {
             return Promise.resolve(support);
         }
-        const promise = this._promises.get(language);
+        var promise = this._promises.get(language);
         if (promise) {
-            return promise.then(_ => this.get(language));
+            return promise.then(function (_) { return _this.get(language); });
         }
         return null;
-    }
-    get(language) {
-        return (this._map.get(language) || null);
-    }
-    setColorMap(colorMap) {
+    };
+    TokenizationRegistryImpl.prototype.get = function (language) {
+        return withUndefinedAsNull(this._map.get(language));
+    };
+    TokenizationRegistryImpl.prototype.setColorMap = function (colorMap) {
         this._colorMap = colorMap;
         this._onDidChange.fire({
-            changedLanguages: Array.from(this._map.keys()),
+            changedLanguages: keys(this._map),
             changedColorMap: true
         });
-    }
-    getColorMap() {
+    };
+    TokenizationRegistryImpl.prototype.getColorMap = function () {
         return this._colorMap;
-    }
-    getDefaultBackground() {
+    };
+    TokenizationRegistryImpl.prototype.getDefaultBackground = function () {
         if (this._colorMap && this._colorMap.length > 2 /* DefaultBackground */) {
             return this._colorMap[2 /* DefaultBackground */];
         }
         return null;
-    }
-}
+    };
+    return TokenizationRegistryImpl;
+}());
+export { TokenizationRegistryImpl };

@@ -4,46 +4,48 @@
  *--------------------------------------------------------------------------------------------*/
 import { ignoreBracketsInToken } from '../supports.js';
 import { BracketsUtils } from './richEditBrackets.js';
-export class BracketElectricCharacterSupport {
-    constructor(richEditBrackets) {
+var BracketElectricCharacterSupport = /** @class */ (function () {
+    function BracketElectricCharacterSupport(richEditBrackets) {
         this._richEditBrackets = richEditBrackets;
     }
-    getElectricCharacters() {
-        let result = [];
+    BracketElectricCharacterSupport.prototype.getElectricCharacters = function () {
+        var result = [];
         if (this._richEditBrackets) {
-            for (const bracket of this._richEditBrackets.brackets) {
-                for (const close of bracket.close) {
-                    const lastChar = close.charAt(close.length - 1);
+            for (var _i = 0, _a = this._richEditBrackets.brackets; _i < _a.length; _i++) {
+                var bracket = _a[_i];
+                for (var _b = 0, _c = bracket.close; _b < _c.length; _b++) {
+                    var close_1 = _c[_b];
+                    var lastChar = close_1.charAt(close_1.length - 1);
                     result.push(lastChar);
                 }
             }
         }
         // Filter duplicate entries
-        result = result.filter((item, pos, array) => {
+        result = result.filter(function (item, pos, array) {
             return array.indexOf(item) === pos;
         });
         return result;
-    }
-    onElectricCharacter(character, context, column) {
+    };
+    BracketElectricCharacterSupport.prototype.onElectricCharacter = function (character, context, column) {
         if (!this._richEditBrackets || this._richEditBrackets.brackets.length === 0) {
             return null;
         }
-        const tokenIndex = context.findTokenIndexAtOffset(column - 1);
+        var tokenIndex = context.findTokenIndexAtOffset(column - 1);
         if (ignoreBracketsInToken(context.getStandardTokenType(tokenIndex))) {
             return null;
         }
-        const reversedBracketRegex = this._richEditBrackets.reversedRegex;
-        const text = context.getLineContent().substring(0, column - 1) + character;
-        const r = BracketsUtils.findPrevBracketInRange(reversedBracketRegex, 1, text, 0, text.length);
+        var reversedBracketRegex = this._richEditBrackets.reversedRegex;
+        var text = context.getLineContent().substring(0, column - 1) + character;
+        var r = BracketsUtils.findPrevBracketInRange(reversedBracketRegex, 1, text, 0, text.length);
         if (!r) {
             return null;
         }
-        const bracketText = text.substring(r.startColumn - 1, r.endColumn - 1).toLowerCase();
-        const isOpen = this._richEditBrackets.textIsOpenBracket[bracketText];
+        var bracketText = text.substring(r.startColumn - 1, r.endColumn - 1).toLowerCase();
+        var isOpen = this._richEditBrackets.textIsOpenBracket[bracketText];
         if (isOpen) {
             return null;
         }
-        const textBeforeBracket = context.getActualLineContentBefore(r.startColumn - 1);
+        var textBeforeBracket = context.getActualLineContentBefore(r.startColumn - 1);
         if (!/^\s*$/.test(textBeforeBracket)) {
             // There is other text on the line before the bracket
             return null;
@@ -51,5 +53,7 @@ export class BracketElectricCharacterSupport {
         return {
             matchOpenBracket: bracketText
         };
-    }
-}
+    };
+    return BracketElectricCharacterSupport;
+}());
+export { BracketElectricCharacterSupport };

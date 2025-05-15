@@ -2,14 +2,15 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define('vs/basic-languages/python/python',["require", "exports", "../fillers/monaco-editor-core"], function (require, exports, monaco_editor_core_1) {
-    "use strict";
+define(["require", "exports"], function (require, exports) {
+    'use strict';
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.language = exports.conf = void 0;
+    // Allow for running under nodejs/requirejs in tests
+    var _monaco = (typeof monaco === 'undefined' ? self.monaco : monaco);
     exports.conf = {
         comments: {
             lineComment: '#',
-            blockComment: ["'''", "'''"]
+            blockComment: ['\'\'\'', '\'\'\''],
         },
         brackets: [
             ['{', '}'],
@@ -21,26 +22,26 @@ define('vs/basic-languages/python/python',["require", "exports", "../fillers/mon
             { open: '[', close: ']' },
             { open: '(', close: ')' },
             { open: '"', close: '"', notIn: ['string'] },
-            { open: "'", close: "'", notIn: ['string', 'comment'] }
+            { open: '\'', close: '\'', notIn: ['string', 'comment'] },
         ],
         surroundingPairs: [
             { open: '{', close: '}' },
             { open: '[', close: ']' },
             { open: '(', close: ')' },
             { open: '"', close: '"' },
-            { open: "'", close: "'" }
+            { open: '\'', close: '\'' },
         ],
         onEnterRules: [
             {
-                beforeText: new RegExp('^\\s*(?:def|class|for|if|elif|else|while|try|with|finally|except|async).*?:\\s*$'),
-                action: { indentAction: monaco_editor_core_1.languages.IndentAction.Indent }
+                beforeText: new RegExp("^\\s*(?:def|class|for|if|elif|else|while|try|with|finally|except|async).*?:\\s*$"),
+                action: { indentAction: _monaco.languages.IndentAction.Indent }
             }
         ],
         folding: {
             offSide: true,
             markers: {
-                start: new RegExp('^\\s*#region\\b'),
-                end: new RegExp('^\\s*#endregion\\b')
+                start: new RegExp("^\\s*#region\\b"),
+                end: new RegExp("^\\s*#endregion\\b")
             }
         }
     };
@@ -48,18 +49,9 @@ define('vs/basic-languages/python/python',["require", "exports", "../fillers/mon
         defaultToken: '',
         tokenPostfix: '.python',
         keywords: [
-            // This section is the result of running
-            // `for k in keyword.kwlist: print('  "' + k + '",')` in a Python REPL,
-            // though note that the output from Python 3 is not a strict superset of the
-            // output from Python 2.
-            'False',
-            'None',
-            'True',
             'and',
             'as',
             'assert',
-            'async',
-            'await',
             'break',
             'class',
             'continue',
@@ -78,13 +70,14 @@ define('vs/basic-languages/python/python',["require", "exports", "../fillers/mon
             'in',
             'is',
             'lambda',
-            'nonlocal',
+            'None',
             'not',
             'or',
             'pass',
             'print',
             'raise',
             'return',
+            'self',
             'try',
             'while',
             'with',
@@ -155,7 +148,6 @@ define('vs/basic-languages/python/python',["require", "exports", "../fillers/mon
             'repr',
             'reversed',
             'round',
-            'self',
             'set',
             'setattr',
             'slice',
@@ -171,6 +163,8 @@ define('vs/basic-languages/python/python',["require", "exports", "../fillers/mon
             'vars',
             'xrange',
             'zip',
+            'True',
+            'False',
             '__dict__',
             '__methods__',
             '__members__',
@@ -194,16 +188,13 @@ define('vs/basic-languages/python/python',["require", "exports", "../fillers/mon
                 { include: '@strings' },
                 [/[,:;]/, 'delimiter'],
                 [/[{}\[\]()]/, '@brackets'],
-                [/@[a-zA-Z_]\w*/, 'tag'],
-                [
-                    /[a-zA-Z_]\w*/,
-                    {
+                [/@[a-zA-Z]\w*/, 'tag'],
+                [/[a-zA-Z]\w*/, {
                         cases: {
                             '@keywords': 'keyword',
                             '@default': 'identifier'
                         }
-                    }
-                ]
+                    }]
             ],
             // Deal with white space, including single and multi-line comments
             whitespace: [
@@ -253,4 +244,3 @@ define('vs/basic-languages/python/python',["require", "exports", "../fillers/mon
         }
     };
 });
-

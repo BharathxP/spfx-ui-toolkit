@@ -4,11 +4,14 @@
  *--------------------------------------------------------------------------------------------*/
 import { EditOperation } from '../../common/core/editOperation.js';
 import { Range } from '../../common/core/range.js';
-export class FormattingEdit {
-    static _handleEolEdits(editor, edits) {
-        let newEol = undefined;
-        let singleEdits = [];
-        for (let edit of edits) {
+var FormattingEdit = /** @class */ (function () {
+    function FormattingEdit() {
+    }
+    FormattingEdit._handleEolEdits = function (editor, edits) {
+        var newEol = undefined;
+        var singleEdits = [];
+        for (var _i = 0, edits_1 = edits; _i < edits_1.length; _i++) {
+            var edit = edits_1[_i];
             if (typeof edit.eol === 'number') {
                 newEol = edit.eol;
             }
@@ -22,30 +25,28 @@ export class FormattingEdit {
             }
         }
         return singleEdits;
-    }
-    static _isFullModelReplaceEdit(editor, edit) {
+    };
+    FormattingEdit._isFullModelReplaceEdit = function (editor, edit) {
         if (!editor.hasModel()) {
             return false;
         }
-        const model = editor.getModel();
-        const editRange = model.validateRange(edit.range);
-        const fullModelRange = model.getFullModelRange();
+        var model = editor.getModel();
+        var editRange = model.validateRange(edit.range);
+        var fullModelRange = model.getFullModelRange();
         return fullModelRange.equalsRange(editRange);
-    }
-    static execute(editor, _edits, addUndoStops) {
-        if (addUndoStops) {
-            editor.pushUndoStop();
-        }
-        const edits = FormattingEdit._handleEolEdits(editor, _edits);
+    };
+    FormattingEdit.execute = function (editor, _edits) {
+        editor.pushUndoStop();
+        var edits = FormattingEdit._handleEolEdits(editor, _edits);
         if (edits.length === 1 && FormattingEdit._isFullModelReplaceEdit(editor, edits[0])) {
             // We use replace semantics and hope that markers stay put...
-            editor.executeEdits('formatEditsCommand', edits.map(edit => EditOperation.replace(Range.lift(edit.range), edit.text)));
+            editor.executeEdits('formatEditsCommand', edits.map(function (edit) { return EditOperation.replace(Range.lift(edit.range), edit.text); }));
         }
         else {
-            editor.executeEdits('formatEditsCommand', edits.map(edit => EditOperation.replaceMove(Range.lift(edit.range), edit.text)));
+            editor.executeEdits('formatEditsCommand', edits.map(function (edit) { return EditOperation.replaceMove(Range.lift(edit.range), edit.text); }));
         }
-        if (addUndoStops) {
-            editor.pushUndoStop();
-        }
-    }
-}
+        editor.pushUndoStop();
+    };
+    return FormattingEdit;
+}());
+export { FormattingEdit };

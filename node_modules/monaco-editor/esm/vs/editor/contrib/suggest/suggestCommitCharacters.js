@@ -5,22 +5,23 @@
 import { isNonEmptyArray } from '../../../base/common/arrays.js';
 import { DisposableStore } from '../../../base/common/lifecycle.js';
 import { CharacterSet } from '../../common/core/characterClassifier.js';
-export class CommitCharacterController {
-    constructor(editor, widget, accept) {
+var CommitCharacterController = /** @class */ (function () {
+    function CommitCharacterController(editor, widget, accept) {
+        var _this = this;
         this._disposables = new DisposableStore();
-        this._disposables.add(widget.onDidShow(() => this._onItem(widget.getFocusedItem())));
+        this._disposables.add(widget.onDidShow(function () { return _this._onItem(widget.getFocusedItem()); }));
         this._disposables.add(widget.onDidFocus(this._onItem, this));
         this._disposables.add(widget.onDidHide(this.reset, this));
-        this._disposables.add(editor.onWillType(text => {
-            if (this._active && !widget.isFrozen()) {
-                const ch = text.charCodeAt(text.length - 1);
-                if (this._active.acceptCharacters.has(ch) && editor.getOption(0 /* acceptSuggestionOnCommitCharacter */)) {
-                    accept(this._active.item);
+        this._disposables.add(editor.onWillType(function (text) {
+            if (_this._active && !widget.isFrozen()) {
+                var ch = text.charCodeAt(text.length - 1);
+                if (_this._active.acceptCharacters.has(ch) && editor.getOption(0 /* acceptSuggestionOnCommitCharacter */)) {
+                    accept(_this._active.item);
                 }
             }
         }));
     }
-    _onItem(selected) {
+    CommitCharacterController.prototype._onItem = function (selected) {
         if (!selected || !isNonEmptyArray(selected.item.completion.commitCharacters)) {
             // no item or no commit characters
             this.reset();
@@ -31,18 +32,21 @@ export class CommitCharacterController {
             return;
         }
         // keep item and its commit characters
-        const acceptCharacters = new CharacterSet();
-        for (const ch of selected.item.completion.commitCharacters) {
+        var acceptCharacters = new CharacterSet();
+        for (var _i = 0, _a = selected.item.completion.commitCharacters; _i < _a.length; _i++) {
+            var ch = _a[_i];
             if (ch.length > 0) {
                 acceptCharacters.add(ch.charCodeAt(0));
             }
         }
-        this._active = { acceptCharacters, item: selected };
-    }
-    reset() {
+        this._active = { acceptCharacters: acceptCharacters, item: selected };
+    };
+    CommitCharacterController.prototype.reset = function () {
         this._active = undefined;
-    }
-    dispose() {
+    };
+    CommitCharacterController.prototype.dispose = function () {
         this._disposables.dispose();
-    }
-}
+    };
+    return CommitCharacterController;
+}());
+export { CommitCharacterController };

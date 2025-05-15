@@ -3,31 +3,35 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 import { Range } from './range.js';
-export class EditOperation {
-    static insert(position, text) {
+var EditOperation = /** @class */ (function () {
+    function EditOperation() {
+    }
+    EditOperation.insert = function (position, text) {
         return {
             range: new Range(position.lineNumber, position.column, position.lineNumber, position.column),
             text: text,
             forceMoveMarkers: true
         };
-    }
-    static delete(range) {
+    };
+    EditOperation.delete = function (range) {
         return {
             range: range,
             text: null
         };
-    }
-    static replace(range, text) {
+    };
+    EditOperation.replace = function (range, text) {
         return {
             range: range,
             text: text
         };
-    }
-    static replaceMove(range, text) {
+    };
+    EditOperation.replaceMove = function (range, text) {
         return {
             range: range,
             text: text,
             forceMoveMarkers: true
         };
-    }
-}
+    };
+    return EditOperation;
+}());
+export { EditOperation };

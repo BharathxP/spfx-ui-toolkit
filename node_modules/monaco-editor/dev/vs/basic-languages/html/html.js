@@ -2,28 +2,12 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define('vs/basic-languages/html/html',["require", "exports", "../fillers/monaco-editor-core"], function (require, exports, monaco_editor_core_1) {
-    "use strict";
+define(["require", "exports"], function (require, exports) {
+    'use strict';
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.language = exports.conf = void 0;
-    var EMPTY_ELEMENTS = [
-        'area',
-        'base',
-        'br',
-        'col',
-        'embed',
-        'hr',
-        'img',
-        'input',
-        'keygen',
-        'link',
-        'menuitem',
-        'meta',
-        'param',
-        'source',
-        'track',
-        'wbr'
-    ];
+    // Allow for running under nodejs/requirejs in tests
+    var _monaco = (typeof monaco === 'undefined' ? self.monaco : monaco);
+    var EMPTY_ELEMENTS = ['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'keygen', 'link', 'menuitem', 'meta', 'param', 'source', 'track', 'wbr'];
     exports.conf = {
         wordPattern: /(-?\d*\.\d\w*)|([^\`\~\!\@\$\^\&\*\(\)\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\s]+)/g,
         comments: {
@@ -40,33 +24,31 @@ define('vs/basic-languages/html/html',["require", "exports", "../fillers/monaco-
             { open: '[', close: ']' },
             { open: '(', close: ')' },
             { open: '"', close: '"' },
-            { open: "'", close: "'" }
+            { open: '\'', close: '\'' }
         ],
         surroundingPairs: [
             { open: '"', close: '"' },
-            { open: "'", close: "'" },
+            { open: '\'', close: '\'' },
             { open: '{', close: '}' },
             { open: '[', close: ']' },
             { open: '(', close: ')' },
-            { open: '<', close: '>' }
+            { open: '<', close: '>' },
         ],
         onEnterRules: [
             {
                 beforeText: new RegExp("<(?!(?:" + EMPTY_ELEMENTS.join('|') + "))([_:\\w][_:\\w-.\\d]*)([^/>]*(?!/)>)[^<]*$", 'i'),
                 afterText: /^<\/([_:\w][_:\w-.\d]*)\s*>$/i,
-                action: {
-                    indentAction: monaco_editor_core_1.languages.IndentAction.IndentOutdent
-                }
+                action: { indentAction: _monaco.languages.IndentAction.IndentOutdent }
             },
             {
                 beforeText: new RegExp("<(?!(?:" + EMPTY_ELEMENTS.join('|') + "))(\\w[\\w\\d]*)([^/>]*(?!/)>)[^<]*$", 'i'),
-                action: { indentAction: monaco_editor_core_1.languages.IndentAction.Indent }
+                action: { indentAction: _monaco.languages.IndentAction.Indent }
             }
         ],
         folding: {
             markers: {
-                start: new RegExp('^\\s*<!--\\s*#region\\b.*-->'),
-                end: new RegExp('^\\s*<!--\\s*#endregion\\b.*-->')
+                start: new RegExp("^\\s*<!--\\s*#region\\b.*-->"),
+                end: new RegExp("^\\s*<!--\\s*#endregion\\b.*-->")
             }
         }
     };
@@ -85,11 +67,11 @@ define('vs/basic-languages/html/html',["require", "exports", "../fillers/monaco-
                 [/(<)((?:[\w\-]+:)?[\w\-]+)/, ['delimiter', { token: 'tag', next: '@otherTag' }]],
                 [/(<\/)((?:[\w\-]+:)?[\w\-]+)/, ['delimiter', { token: 'tag', next: '@otherTag' }]],
                 [/</, 'delimiter'],
-                [/[^<]+/] // text
+                [/[^<]+/],
             ],
             doctype: [
                 [/[^>]+/, 'metatag.content'],
-                [/>/, 'metatag', '@pop']
+                [/>/, 'metatag', '@pop'],
             ],
             comment: [
                 [/-->/, 'comment', '@pop'],
@@ -102,7 +84,7 @@ define('vs/basic-languages/html/html',["require", "exports", "../fillers/monaco-
                 [/'([^']*)'/, 'attribute.value'],
                 [/[\w\-]+/, 'attribute.name'],
                 [/=/, 'delimiter'],
-                [/[ \t\r\n]+/] // whitespace
+                [/[ \t\r\n]+/],
             ],
             // -- BEGIN <script> tags handling
             // After <script
@@ -112,68 +94,28 @@ define('vs/basic-languages/html/html',["require", "exports", "../fillers/monaco-
                 [/'([^']*)'/, 'attribute.value'],
                 [/[\w\-]+/, 'attribute.name'],
                 [/=/, 'delimiter'],
-                [
-                    />/,
-                    {
-                        token: 'delimiter',
-                        next: '@scriptEmbedded',
-                        nextEmbedded: 'text/javascript'
-                    }
-                ],
+                [/>/, { token: 'delimiter', next: '@scriptEmbedded', nextEmbedded: 'text/javascript' }],
                 [/[ \t\r\n]+/],
                 [/(<\/)(script\s*)(>)/, ['delimiter', 'tag', { token: 'delimiter', next: '@pop' }]]
             ],
             // After <script ... type
             scriptAfterType: [
                 [/=/, 'delimiter', '@scriptAfterTypeEquals'],
-                [
-                    />/,
-                    {
-                        token: 'delimiter',
-                        next: '@scriptEmbedded',
-                        nextEmbedded: 'text/javascript'
-                    }
-                ],
+                [/>/, { token: 'delimiter', next: '@scriptEmbedded', nextEmbedded: 'text/javascript' }],
                 [/[ \t\r\n]+/],
                 [/<\/script\s*>/, { token: '@rematch', next: '@pop' }]
             ],
             // After <script ... type =
             scriptAfterTypeEquals: [
-                [
-                    /"([^"]*)"/,
-                    {
-                        token: 'attribute.value',
-                        switchTo: '@scriptWithCustomType.$1'
-                    }
-                ],
-                [
-                    /'([^']*)'/,
-                    {
-                        token: 'attribute.value',
-                        switchTo: '@scriptWithCustomType.$1'
-                    }
-                ],
-                [
-                    />/,
-                    {
-                        token: 'delimiter',
-                        next: '@scriptEmbedded',
-                        nextEmbedded: 'text/javascript'
-                    }
-                ],
+                [/"([^"]*)"/, { token: 'attribute.value', switchTo: '@scriptWithCustomType.$1' }],
+                [/'([^']*)'/, { token: 'attribute.value', switchTo: '@scriptWithCustomType.$1' }],
+                [/>/, { token: 'delimiter', next: '@scriptEmbedded', nextEmbedded: 'text/javascript' }],
                 [/[ \t\r\n]+/],
                 [/<\/script\s*>/, { token: '@rematch', next: '@pop' }]
             ],
             // After <script ... type = $S2
             scriptWithCustomType: [
-                [
-                    />/,
-                    {
-                        token: 'delimiter',
-                        next: '@scriptEmbedded.$S2',
-                        nextEmbedded: '$S2'
-                    }
-                ],
+                [/>/, { token: 'delimiter', next: '@scriptEmbedded.$S2', nextEmbedded: '$S2' }],
                 [/"([^"]*)"/, 'attribute.value'],
                 [/'([^']*)'/, 'attribute.value'],
                 [/[\w\-]+/, 'attribute.name'],
@@ -194,68 +136,28 @@ define('vs/basic-languages/html/html',["require", "exports", "../fillers/monaco-
                 [/'([^']*)'/, 'attribute.value'],
                 [/[\w\-]+/, 'attribute.name'],
                 [/=/, 'delimiter'],
-                [
-                    />/,
-                    {
-                        token: 'delimiter',
-                        next: '@styleEmbedded',
-                        nextEmbedded: 'text/css'
-                    }
-                ],
+                [/>/, { token: 'delimiter', next: '@styleEmbedded', nextEmbedded: 'text/css' }],
                 [/[ \t\r\n]+/],
                 [/(<\/)(style\s*)(>)/, ['delimiter', 'tag', { token: 'delimiter', next: '@pop' }]]
             ],
             // After <style ... type
             styleAfterType: [
                 [/=/, 'delimiter', '@styleAfterTypeEquals'],
-                [
-                    />/,
-                    {
-                        token: 'delimiter',
-                        next: '@styleEmbedded',
-                        nextEmbedded: 'text/css'
-                    }
-                ],
+                [/>/, { token: 'delimiter', next: '@styleEmbedded', nextEmbedded: 'text/css' }],
                 [/[ \t\r\n]+/],
                 [/<\/style\s*>/, { token: '@rematch', next: '@pop' }]
             ],
             // After <style ... type =
             styleAfterTypeEquals: [
-                [
-                    /"([^"]*)"/,
-                    {
-                        token: 'attribute.value',
-                        switchTo: '@styleWithCustomType.$1'
-                    }
-                ],
-                [
-                    /'([^']*)'/,
-                    {
-                        token: 'attribute.value',
-                        switchTo: '@styleWithCustomType.$1'
-                    }
-                ],
-                [
-                    />/,
-                    {
-                        token: 'delimiter',
-                        next: '@styleEmbedded',
-                        nextEmbedded: 'text/css'
-                    }
-                ],
+                [/"([^"]*)"/, { token: 'attribute.value', switchTo: '@styleWithCustomType.$1' }],
+                [/'([^']*)'/, { token: 'attribute.value', switchTo: '@styleWithCustomType.$1' }],
+                [/>/, { token: 'delimiter', next: '@styleEmbedded', nextEmbedded: 'text/css' }],
                 [/[ \t\r\n]+/],
                 [/<\/style\s*>/, { token: '@rematch', next: '@pop' }]
             ],
             // After <style ... type = $S2
             styleWithCustomType: [
-                [
-                    />/,
-                    {
-                        token: 'delimiter',
-                        next: '@styleEmbedded.$S2',
-                        nextEmbedded: '$S2'
-                    }
-                ],
+                [/>/, { token: 'delimiter', next: '@styleEmbedded.$S2', nextEmbedded: '$S2' }],
                 [/"([^"]*)"/, 'attribute.value'],
                 [/'([^']*)'/, 'attribute.value'],
                 [/[\w\-]+/, 'attribute.name'],
@@ -266,9 +168,8 @@ define('vs/basic-languages/html/html',["require", "exports", "../fillers/monaco-
             styleEmbedded: [
                 [/<\/style/, { token: '@rematch', next: '@pop', nextEmbedded: '@pop' }],
                 [/[^<]+/, '']
-            ]
-            // -- END <style> tags handling
-        }
+            ],
+        },
     };
 });
 // TESTED WITH:
@@ -307,4 +208,3 @@ define('vs/basic-languages/html/html',["require", "exports", "../fillers/monaco-
 //   </div>
 // </body>
 // </html>
-;

@@ -2,14 +2,13 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define('vs/basic-languages/go/go',["require", "exports"], function (require, exports) {
-    "use strict";
+define(["require", "exports"], function (require, exports) {
+    'use strict';
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.language = exports.conf = void 0;
     exports.conf = {
         comments: {
             lineComment: '//',
-            blockComment: ['/*', '*/']
+            blockComment: ['/*', '*/'],
         },
         brackets: [
             ['{', '}'],
@@ -22,7 +21,7 @@ define('vs/basic-languages/go/go',["require", "exports"], function (require, exp
             { open: '(', close: ')' },
             { open: '`', close: '`', notIn: ['string'] },
             { open: '"', close: '"', notIn: ['string'] },
-            { open: "'", close: "'", notIn: ['string', 'comment'] }
+            { open: '\'', close: '\'', notIn: ['string', 'comment'] },
         ],
         surroundingPairs: [
             { open: '{', close: '}' },
@@ -30,7 +29,7 @@ define('vs/basic-languages/go/go',["require", "exports"], function (require, exp
             { open: '(', close: ')' },
             { open: '`', close: '`' },
             { open: '"', close: '"' },
-            { open: "'", close: "'" }
+            { open: '\'', close: '\'' },
         ]
     };
     exports.language = {
@@ -83,56 +82,13 @@ define('vs/basic-languages/go/go',["require", "exports"], function (require, exp
             'int',
             'uintptr',
             'string',
-            'nil'
+            'nil',
         ],
         operators: [
-            '+',
-            '-',
-            '*',
-            '/',
-            '%',
-            '&',
-            '|',
-            '^',
-            '<<',
-            '>>',
-            '&^',
-            '+=',
-            '-=',
-            '*=',
-            '/=',
-            '%=',
-            '&=',
-            '|=',
-            '^=',
-            '<<=',
-            '>>=',
-            '&^=',
-            '&&',
-            '||',
-            '<-',
-            '++',
-            '--',
-            '==',
-            '<',
-            '>',
-            '=',
-            '!',
-            '!=',
-            '<=',
-            '>=',
-            ':=',
-            '...',
-            '(',
-            ')',
-            '',
-            ']',
-            '{',
-            '}',
-            ',',
-            ';',
-            '.',
-            ':'
+            '+', '-', '*', '/', '%', '&', '|', '^', '<<', '>>', '&^',
+            '+=', '-=', '*=', '/=', '%=', '&=', '|=', '^=', '<<=', '>>=', '&^=',
+            '&&', '||', '<-', '++', '--', '==', '<', '>', '=', '!', '!=', '<=', '>=', ':=', '...',
+            '(', ')', '', ']', '{', '}', ',', ';', '.', ':'
         ],
         // we include these common regular expressions
         symbols: /[=><!~?:&|+\-*\/\^%]+/,
@@ -141,15 +97,12 @@ define('vs/basic-languages/go/go',["require", "exports"], function (require, exp
         tokenizer: {
             root: [
                 // identifiers and keywords
-                [
-                    /[a-zA-Z_]\w*/,
-                    {
+                [/[a-zA-Z_]\w*/, {
                         cases: {
                             '@keywords': { token: 'keyword.$0' },
                             '@default': 'identifier'
                         }
-                    }
-                ],
+                    }],
                 // whitespace
                 { include: '@whitespace' },
                 // [[ attributes ]].
@@ -159,15 +112,12 @@ define('vs/basic-languages/go/go',["require", "exports"], function (require, exp
                 // delimiters and operators
                 [/[{}()\[\]]/, '@brackets'],
                 [/[<>](?!@symbols)/, '@brackets'],
-                [
-                    /@symbols/,
-                    {
+                [/@symbols/, {
                         cases: {
                             '@operators': 'delimiter',
                             '@default': ''
                         }
-                    }
-                ],
+                    }],
                 // numbers
                 [/\d*\d+[eE]([\-+]?\d+)?/, 'number.float'],
                 [/\d*\.\d+([eE][\-+]?\d+)?/, 'number.float'],
@@ -181,7 +131,7 @@ define('vs/basic-languages/go/go',["require", "exports"], function (require, exp
                 // strings
                 [/"([^"\\]|\\.)*$/, 'string.invalid'],
                 [/"/, 'string', '@string'],
-                [/`/, 'string', '@rawstring'],
+                [/`/, "string", "@rawstring"],
                 // characters
                 [/'[^\\']'/, 'string'],
                 [/(')(@escapes)(')/, ['string', 'string.escape', 'string']],
@@ -191,7 +141,7 @@ define('vs/basic-languages/go/go',["require", "exports"], function (require, exp
                 [/[ \t\r\n]+/, ''],
                 [/\/\*\*(?!\/)/, 'comment.doc', '@doccomment'],
                 [/\/\*/, 'comment', '@comment'],
-                [/\/\/.*$/, 'comment']
+                [/\/\/.*$/, 'comment'],
             ],
             comment: [
                 [/[^\/*]+/, 'comment'],
@@ -215,10 +165,9 @@ define('vs/basic-languages/go/go',["require", "exports"], function (require, exp
                 [/"/, 'string', '@pop']
             ],
             rawstring: [
-                [/[^\`]/, 'string'],
-                [/`/, 'string', '@pop']
-            ]
-        }
+                [/[^\`]/, "string"],
+                [/`/, "string", "@pop"]
+            ],
+        },
     };
 });
-

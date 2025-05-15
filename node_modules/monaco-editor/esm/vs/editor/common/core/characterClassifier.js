@@ -6,46 +6,50 @@ import { toUint8 } from '../../../base/common/uint.js';
 /**
  * A fast character classifier that uses a compact array for ASCII values.
  */
-export class CharacterClassifier {
-    constructor(_defaultValue) {
-        let defaultValue = toUint8(_defaultValue);
+var CharacterClassifier = /** @class */ (function () {
+    function CharacterClassifier(_defaultValue) {
+        var defaultValue = toUint8(_defaultValue);
         this._defaultValue = defaultValue;
         this._asciiMap = CharacterClassifier._createAsciiMap(defaultValue);
         this._map = new Map();
     }
-    static _createAsciiMap(defaultValue) {
-        let asciiMap = new Uint8Array(256);
-        for (let i = 0; i < 256; i++) {
+    CharacterClassifier._createAsciiMap = function (defaultValue) {
+        var asciiMap = new Uint8Array(256);
+        for (var i = 0; i < 256; i++) {
             asciiMap[i] = defaultValue;
         }
         return asciiMap;
-    }
-    set(charCode, _value) {
-        let value = toUint8(_value);
+    };
+    CharacterClassifier.prototype.set = function (charCode, _value) {
+        var value = toUint8(_value);
         if (charCode >= 0 && charCode < 256) {
             this._asciiMap[charCode] = value;
         }
         else {
             this._map.set(charCode, value);
         }
-    }
-    get(charCode) {
+    };
+    CharacterClassifier.prototype.get = function (charCode) {
         if (charCode >= 0 && charCode < 256) {
             return this._asciiMap[charCode];
         }
         else {
             return (this._map.get(charCode) || this._defaultValue);
         }
-    }
-}
-export class CharacterSet {
-    constructor() {
+    };
+    return CharacterClassifier;
+}());
+export { CharacterClassifier };
+var CharacterSet = /** @class */ (function () {
+    function CharacterSet() {
         this._actual = new CharacterClassifier(0 /* False */);
     }
-    add(charCode) {
+    CharacterSet.prototype.add = function (charCode) {
         this._actual.set(charCode, 1 /* True */);
-    }
-    has(charCode) {
+    };
+    CharacterSet.prototype.has = function (charCode) {
         return (this._actual.get(charCode) === 1 /* True */);
-    }
-}
+    };
+    return CharacterSet;
+}());
+export { CharacterSet };

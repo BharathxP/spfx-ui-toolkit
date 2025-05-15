@@ -14,18 +14,20 @@
  * To make matters more complicated, an extension can optionally have an UUID. When two
  * extensions have the same UUID, they are considered equal even if their identifier is different.
  */
-export class ExtensionIdentifier {
-    constructor(value) {
+var ExtensionIdentifier = /** @class */ (function () {
+    function ExtensionIdentifier(value) {
         this.value = value;
         this._lower = value.toLowerCase();
     }
     /**
      * Gives the value by which to index (for equality).
      */
-    static toKey(id) {
+    ExtensionIdentifier.toKey = function (id) {
         if (typeof id === 'string') {
             return id.toLowerCase();
         }
         return id._lower;
-    }
-}
+    };
+    return ExtensionIdentifier;
+}());
+export { ExtensionIdentifier };

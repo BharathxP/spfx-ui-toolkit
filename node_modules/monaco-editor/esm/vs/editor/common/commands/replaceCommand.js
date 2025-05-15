@@ -3,80 +3,94 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 import { Selection } from '../core/selection.js';
-export class ReplaceCommand {
-    constructor(range, text, insertsAutoWhitespace = false) {
+var ReplaceCommand = /** @class */ (function () {
+    function ReplaceCommand(range, text, insertsAutoWhitespace) {
+        if (insertsAutoWhitespace === void 0) { insertsAutoWhitespace = false; }
         this._range = range;
         this._text = text;
         this.insertsAutoWhitespace = insertsAutoWhitespace;
     }
-    getEditOperations(model, builder) {
+    ReplaceCommand.prototype.getEditOperations = function (model, builder) {
         builder.addTrackedEditOperation(this._range, this._text);
-    }
-    computeCursorState(model, helper) {
-        let inverseEditOperations = helper.getInverseEditOperations();
-        let srcRange = inverseEditOperations[0].range;
+    };
+    ReplaceCommand.prototype.computeCursorState = function (model, helper) {
+        var inverseEditOperations = helper.getInverseEditOperations();
+        var srcRange = inverseEditOperations[0].range;
         return new Selection(srcRange.endLineNumber, srcRange.endColumn, srcRange.endLineNumber, srcRange.endColumn);
-    }
-}
-export class ReplaceCommandThatSelectsText {
-    constructor(range, text) {
+    };
+    return ReplaceCommand;
+}());
+export { ReplaceCommand };
+var ReplaceCommandThatSelectsText = /** @class */ (function () {
+    function ReplaceCommandThatSelectsText(range, text) {
         this._range = range;
         this._text = text;
     }
-    getEditOperations(model, builder) {
+    ReplaceCommandThatSelectsText.prototype.getEditOperations = function (model, builder) {
         builder.addTrackedEditOperation(this._range, this._text);
-    }
-    computeCursorState(model, helper) {
-        const inverseEditOperations = helper.getInverseEditOperations();
-        const srcRange = inverseEditOperations[0].range;
+    };
+    ReplaceCommandThatSelectsText.prototype.computeCursorState = function (model, helper) {
+        var inverseEditOperations = helper.getInverseEditOperations();
+        var srcRange = inverseEditOperations[0].range;
         return new Selection(srcRange.startLineNumber, srcRange.startColumn, srcRange.endLineNumber, srcRange.endColumn);
-    }
-}
-export class ReplaceCommandWithoutChangingPosition {
-    constructor(range, text, insertsAutoWhitespace = false) {
+    };
+    return ReplaceCommandThatSelectsText;
+}());
+export { ReplaceCommandThatSelectsText };
+var ReplaceCommandWithoutChangingPosition = /** @class */ (function () {
+    function ReplaceCommandWithoutChangingPosition(range, text, insertsAutoWhitespace) {
+        if (insertsAutoWhitespace === void 0) { insertsAutoWhitespace = false; }
         this._range = range;
         this._text = text;
         this.insertsAutoWhitespace = insertsAutoWhitespace;
     }
-    getEditOperations(model, builder) {
+    ReplaceCommandWithoutChangingPosition.prototype.getEditOperations = function (model, builder) {
         builder.addTrackedEditOperation(this._range, this._text);
-    }
-    computeCursorState(model, helper) {
-        let inverseEditOperations = helper.getInverseEditOperations();
-        let srcRange = inverseEditOperations[0].range;
+    };
+    ReplaceCommandWithoutChangingPosition.prototype.computeCursorState = function (model, helper) {
+        var inverseEditOperations = helper.getInverseEditOperations();
+        var srcRange = inverseEditOperations[0].range;
         return new Selection(srcRange.startLineNumber, srcRange.startColumn, srcRange.startLineNumber, srcRange.startColumn);
-    }
-}
-export class ReplaceCommandWithOffsetCursorState {
-    constructor(range, text, lineNumberDeltaOffset, columnDeltaOffset, insertsAutoWhitespace = false) {
+    };
+    return ReplaceCommandWithoutChangingPosition;
+}());
+export { ReplaceCommandWithoutChangingPosition };
+var ReplaceCommandWithOffsetCursorState = /** @class */ (function () {
+    function ReplaceCommandWithOffsetCursorState(range, text, lineNumberDeltaOffset, columnDeltaOffset, insertsAutoWhitespace) {
+        if (insertsAutoWhitespace === void 0) { insertsAutoWhitespace = false; }
         this._range = range;
         this._text = text;
         this._columnDeltaOffset = columnDeltaOffset;
         this._lineNumberDeltaOffset = lineNumberDeltaOffset;
         this.insertsAutoWhitespace = insertsAutoWhitespace;
     }
-    getEditOperations(model, builder) {
+    ReplaceCommandWithOffsetCursorState.prototype.getEditOperations = function (model, builder) {
         builder.addTrackedEditOperation(this._range, this._text);
-    }
-    computeCursorState(model, helper) {
-        let inverseEditOperations = helper.getInverseEditOperations();
-        let srcRange = inverseEditOperations[0].range;
+    };
+    ReplaceCommandWithOffsetCursorState.prototype.computeCursorState = function (model, helper) {
+        var inverseEditOperations = helper.getInverseEditOperations();
+        var srcRange = inverseEditOperations[0].range;
         return new Selection(srcRange.endLineNumber + this._lineNumberDeltaOffset, srcRange.endColumn + this._columnDeltaOffset, srcRange.endLineNumber + this._lineNumberDeltaOffset, srcRange.endColumn + this._columnDeltaOffset);
-    }
-}
-export class ReplaceCommandThatPreservesSelection {
-    constructor(editRange, text, initialSelection, forceMoveMarkers = false) {
+    };
+    return ReplaceCommandWithOffsetCursorState;
+}());
+export { ReplaceCommandWithOffsetCursorState };
+var ReplaceCommandThatPreservesSelection = /** @class */ (function () {
+    function ReplaceCommandThatPreservesSelection(editRange, text, initialSelection, forceMoveMarkers) {
+        if (forceMoveMarkers === void 0) { forceMoveMarkers = false; }
         this._range = editRange;
         this._text = text;
         this._initialSelection = initialSelection;
         this._forceMoveMarkers = forceMoveMarkers;
         this._selectionId = null;
     }
-    getEditOperations(model, builder) {
+    ReplaceCommandThatPreservesSelection.prototype.getEditOperations = function (model, builder) {
         builder.addTrackedEditOperation(this._range, this._text, this._forceMoveMarkers);
         this._selectionId = builder.trackSelection(this._initialSelection);
-    }
-    computeCursorState(model, helper) {
+    };
+    ReplaceCommandThatPreservesSelection.prototype.computeCursorState = function (model, helper) {
         return helper.getTrackedSelection(this._selectionId);
-    }
-}
+    };
+    return ReplaceCommandThatPreservesSelection;
+}());
+export { ReplaceCommandThatPreservesSelection };

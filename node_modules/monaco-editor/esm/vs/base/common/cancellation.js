@@ -3,9 +3,9 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 import { Emitter, Event } from './event.js';
-const shortcutEvent = Object.freeze(function (callback, context) {
-    const handle = setTimeout(callback.bind(context), 0);
-    return { dispose() { clearTimeout(handle); } };
+var shortcutEvent = Object.freeze(function (callback, context) {
+    var handle = setTimeout(callback.bind(context), 0);
+    return { dispose: function () { clearTimeout(handle); } };
 });
 export var CancellationToken;
 (function (CancellationToken) {
@@ -32,12 +32,12 @@ export var CancellationToken;
         onCancellationRequested: shortcutEvent
     });
 })(CancellationToken || (CancellationToken = {}));
-class MutableToken {
-    constructor() {
+var MutableToken = /** @class */ (function () {
+    function MutableToken() {
         this._isCancelled = false;
         this._emitter = null;
     }
-    cancel() {
+    MutableToken.prototype.cancel = function () {
         if (!this._isCancelled) {
             this._isCancelled = true;
             if (this._emitter) {
@@ -45,41 +45,54 @@ class MutableToken {
                 this.dispose();
             }
         }
-    }
-    get isCancellationRequested() {
-        return this._isCancelled;
-    }
-    get onCancellationRequested() {
-        if (this._isCancelled) {
-            return shortcutEvent;
-        }
-        if (!this._emitter) {
-            this._emitter = new Emitter();
-        }
-        return this._emitter.event;
-    }
-    dispose() {
+    };
+    Object.defineProperty(MutableToken.prototype, "isCancellationRequested", {
+        get: function () {
+            return this._isCancelled;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(MutableToken.prototype, "onCancellationRequested", {
+        get: function () {
+            if (this._isCancelled) {
+                return shortcutEvent;
+            }
+            if (!this._emitter) {
+                this._emitter = new Emitter();
+            }
+            return this._emitter.event;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    MutableToken.prototype.dispose = function () {
         if (this._emitter) {
             this._emitter.dispose();
             this._emitter = null;
         }
-    }
-}
-export class CancellationTokenSource {
-    constructor(parent) {
+    };
+    return MutableToken;
+}());
+var CancellationTokenSource = /** @class */ (function () {
+    function CancellationTokenSource(parent) {
         this._token = undefined;
         this._parentListener = undefined;
         this._parentListener = parent && parent.onCancellationRequested(this.cancel, this);
     }
-    get token() {
-        if (!this._token) {
-            // be lazy and create the token only when
-            // actually needed
-            this._token = new MutableToken();
-        }
-        return this._token;
-    }
-    cancel() {
+    Object.defineProperty(CancellationTokenSource.prototype, "token", {
+        get: function () {
+            if (!this._token) {
+                // be lazy and create the token only when
+                // actually needed
+                this._token = new MutableToken();
+            }
+            return this._token;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    CancellationTokenSource.prototype.cancel = function () {
         if (!this._token) {
             // save an object by returning the default
             // cancelled token when cancellation happens
@@ -90,8 +103,9 @@ export class CancellationTokenSource {
             // actually cancel
             this._token.cancel();
         }
-    }
-    dispose(cancel = false) {
+    };
+    CancellationTokenSource.prototype.dispose = function (cancel) {
+        if (cancel === void 0) { cancel = false; }
         if (cancel) {
             this.cancel();
         }
@@ -106,5 +120,7 @@ export class CancellationTokenSource {
             // actually dispose
             this._token.dispose();
         }
-    }
-}
+    };
+    return CancellationTokenSource;
+}());
+export { CancellationTokenSource };

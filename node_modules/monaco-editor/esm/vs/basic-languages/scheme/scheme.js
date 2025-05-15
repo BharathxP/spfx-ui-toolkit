@@ -2,28 +2,25 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 export var conf = {
     comments: {
         lineComment: ';',
-        blockComment: ['#|', '|#']
+        blockComment: ['#|', '|#'],
     },
-    brackets: [
-        ['(', ')'],
-        ['{', '}'],
-        ['[', ']']
-    ],
+    brackets: [['(', ')'], ['{', '}'], ['[', ']']],
     autoClosingPairs: [
         { open: '{', close: '}' },
         { open: '[', close: ']' },
         { open: '(', close: ')' },
-        { open: '"', close: '"' }
+        { open: '"', close: '"' },
     ],
     surroundingPairs: [
         { open: '{', close: '}' },
         { open: '[', close: ']' },
         { open: '(', close: ')' },
-        { open: '"', close: '"' }
-    ]
+        { open: '"', close: '"' },
+    ],
 };
 export var language = {
     defaultToken: '',
@@ -32,7 +29,7 @@ export var language = {
     brackets: [
         { open: '(', close: ')', token: 'delimiter.parenthesis' },
         { open: '{', close: '}', token: 'delimiter.curly' },
-        { open: '[', close: ']', token: 'delimiter.square' }
+        { open: '[', close: ']', token: 'delimiter.square' },
     ],
     keywords: [
         'case',
@@ -57,7 +54,7 @@ export var language = {
         'list',
         'list?',
         'member?',
-        'load'
+        'load',
     ],
     constants: ['#t', '#f'],
     operators: ['eq?', 'eqv?', 'equal?', 'and', 'or', 'not', 'null?'],
@@ -67,7 +64,7 @@ export var language = {
             [/[+-]?\d+(?:(?:\.\d*)?(?:[eE][+-]?\d+)?)?/, 'number.float'],
             [
                 /(?:\b(?:(define|define-syntax|define-macro))\b)(\s+)((?:\w|\-|\!|\?)*)/,
-                ['keyword', 'white', 'variable']
+                ['keyword', 'white', 'variable'],
             ],
             { include: '@whitespace' },
             { include: '@strings' },
@@ -78,25 +75,25 @@ export var language = {
                         '@keywords': 'keyword',
                         '@constants': 'constant',
                         '@operators': 'operators',
-                        '@default': 'identifier'
-                    }
-                }
-            ]
+                        '@default': 'identifier',
+                    },
+                },
+            ],
         ],
         comment: [
             [/[^\|#]+/, 'comment'],
             [/#\|/, 'comment', '@push'],
             [/\|#/, 'comment', '@pop'],
-            [/[\|#]/, 'comment']
+            [/[\|#]/, 'comment'],
         ],
         whitespace: [
             [/[ \t\r\n]+/, 'white'],
             [/#\|/, 'comment', '@comment'],
-            [/;.*$/, 'comment']
+            [/;.*$/, 'comment'],
         ],
         strings: [
             [/"$/, 'string', '@popall'],
-            [/"(?=.)/, 'string', '@multiLineString']
+            [/"(?=.)/, 'string', '@multiLineString'],
         ],
         multiLineString: [
             [/[^\\"]+$/, 'string', '@popall'],
@@ -104,6 +101,6 @@ export var language = {
             [/\\./, 'string.escape'],
             [/"/, 'string', '@popall'],
             [/\\$/, 'string']
-        ]
-    }
+        ],
+    },
 };

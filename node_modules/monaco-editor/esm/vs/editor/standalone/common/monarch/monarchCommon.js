@@ -38,11 +38,11 @@ export function sanitize(s) {
  * Logs a message.
  */
 export function log(lexer, msg) {
-    console.log(`${lexer.languageId}: ${msg}`);
+    console.log(lexer.languageId + ": " + msg);
 }
 // Throwing errors
 export function createError(lexer, msg) {
-    return new Error(`${lexer.languageId}: ${msg}`);
+    return new Error(lexer.languageId + ": " + msg);
 }
 // Helper functions for rule finding and substitution
 /**
@@ -55,8 +55,8 @@ export function createError(lexer, msg) {
  * See documentation for more info
  */
 export function substituteMatches(lexer, str, id, matches, state) {
-    const re = /\$((\$)|(#)|(\d\d?)|[sS](\d\d?)|@(\w+))/g;
-    let stateMatches = null;
+    var re = /\$((\$)|(#)|(\d\d?)|[sS](\d\d?)|@(\w+))/g;
+    var stateMatches = null;
     return str.replace(re, function (full, sub, dollar, hash, n, s, attr, ofs, total) {
         if (!empty(dollar)) {
             return '$'; // $$
@@ -84,13 +84,13 @@ export function substituteMatches(lexer, str, id, matches, state) {
  * Find the tokenizer rules for a specific state (i.e. next action)
  */
 export function findRules(lexer, inState) {
-    let state = inState;
+    var state = inState;
     while (state && state.length > 0) {
-        const rules = lexer.tokenizer[state];
+        var rules = lexer.tokenizer[state];
         if (rules) {
             return rules;
         }
-        const idx = state.lastIndexOf('.');
+        var idx = state.lastIndexOf('.');
         if (idx < 0) {
             state = null; // no further parent
         }
@@ -106,13 +106,13 @@ export function findRules(lexer, inState) {
  * but not yet whether the corresponding rules are correct.
  */
 export function stateExists(lexer, inState) {
-    let state = inState;
+    var state = inState;
     while (state && state.length > 0) {
-        const exist = lexer.stateNames[state];
+        var exist = lexer.stateNames[state];
         if (exist) {
             return true;
         }
-        const idx = state.lastIndexOf('.');
+        var idx = state.lastIndexOf('.');
         if (idx < 0) {
             state = null; // no further parent
         }

@@ -185,24 +185,20 @@ export var TextDocument;
             }
             return diff;
         });
-        var lastModifiedOffset = 0;
-        var spans = [];
-        for (var _i = 0, sortedEdits_1 = sortedEdits; _i < sortedEdits_1.length; _i++) {
-            var e = sortedEdits_1[_i];
+        var lastModifiedOffset = text.length;
+        for (var i = sortedEdits.length - 1; i >= 0; i--) {
+            var e = sortedEdits[i];
             var startOffset = document.offsetAt(e.range.start);
-            if (startOffset < lastModifiedOffset) {
+            var endOffset = document.offsetAt(e.range.end);
+            if (endOffset <= lastModifiedOffset) {
+                text = text.substring(0, startOffset) + e.newText + text.substring(endOffset, text.length);
+            }
+            else {
                 throw new Error('Overlapping edit');
             }
-            else if (startOffset > lastModifiedOffset) {
-                spans.push(text.substring(lastModifiedOffset, startOffset));
-            }
-            if (e.newText.length) {
-                spans.push(e.newText);
-            }
-            lastModifiedOffset = document.offsetAt(e.range.end);
+            lastModifiedOffset = startOffset;
         }
-        spans.push(text.substr(lastModifiedOffset));
-        return spans.join('');
+        return text;
     }
     TextDocument.applyEdits = applyEdits;
 })(TextDocument || (TextDocument = {}));

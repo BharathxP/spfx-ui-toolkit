@@ -2,31 +2,20 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-export class EditorTheme {
-    constructor(theme) {
-        this._theme = theme;
-    }
-    get type() {
-        return this._theme.type;
-    }
-    update(theme) {
-        this._theme = theme;
-    }
-    getColor(color) {
-        return this._theme.getColor(color);
-    }
-}
-export class ViewContext {
-    constructor(configuration, theme, model) {
+var ViewContext = /** @class */ (function () {
+    function ViewContext(configuration, theme, model, privateViewEventBus) {
         this.configuration = configuration;
-        this.theme = new EditorTheme(theme);
+        this.theme = theme;
         this.model = model;
         this.viewLayout = model.viewLayout;
+        this.privateViewEventBus = privateViewEventBus;
     }
-    addEventHandler(eventHandler) {
-        this.model.addViewEventHandler(eventHandler);
-    }
-    removeEventHandler(eventHandler) {
-        this.model.removeViewEventHandler(eventHandler);
-    }
-}
+    ViewContext.prototype.addEventHandler = function (eventHandler) {
+        this.privateViewEventBus.addEventHandler(eventHandler);
+    };
+    ViewContext.prototype.removeEventHandler = function (eventHandler) {
+        this.privateViewEventBus.removeEventHandler(eventHandler);
+    };
+    return ViewContext;
+}());
+export { ViewContext };

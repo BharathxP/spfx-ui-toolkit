@@ -2,11 +2,24 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 import * as browser from './browser.js';
 import { IframeUtils } from './iframe.js';
 import * as platform from '../common/platform.js';
-export class StandardMouseEvent {
-    constructor(e) {
+var StandardMouseEvent = /** @class */ (function () {
+    function StandardMouseEvent(e) {
         this.timestamp = Date.now();
         this.browserEvent = e;
         this.leftButton = e.button === 0;
@@ -32,27 +45,45 @@ export class StandardMouseEvent {
             this.posy = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
         }
         // Find the position of the iframe this code is executing in relative to the iframe where the event was captured.
-        let iframeOffsets = IframeUtils.getPositionOfChildWindowRelativeToAncestorWindow(self, e.view);
+        var iframeOffsets = IframeUtils.getPositionOfChildWindowRelativeToAncestorWindow(self, e.view);
         this.posx -= iframeOffsets.left;
         this.posy -= iframeOffsets.top;
     }
-    preventDefault() {
-        this.browserEvent.preventDefault();
+    StandardMouseEvent.prototype.preventDefault = function () {
+        if (this.browserEvent.preventDefault) {
+            this.browserEvent.preventDefault();
+        }
+    };
+    StandardMouseEvent.prototype.stopPropagation = function () {
+        if (this.browserEvent.stopPropagation) {
+            this.browserEvent.stopPropagation();
+        }
+    };
+    return StandardMouseEvent;
+}());
+export { StandardMouseEvent };
+var DragMouseEvent = /** @class */ (function (_super) {
+    __extends(DragMouseEvent, _super);
+    function DragMouseEvent(e) {
+        var _this = _super.call(this, e) || this;
+        _this.dataTransfer = e.dataTransfer;
+        return _this;
     }
-    stopPropagation() {
-        this.browserEvent.stopPropagation();
-    }
-}
-export class StandardWheelEvent {
-    constructor(e, deltaX = 0, deltaY = 0) {
+    return DragMouseEvent;
+}(StandardMouseEvent));
+export { DragMouseEvent };
+var StandardWheelEvent = /** @class */ (function () {
+    function StandardWheelEvent(e, deltaX, deltaY) {
+        if (deltaX === void 0) { deltaX = 0; }
+        if (deltaY === void 0) { deltaY = 0; }
         this.browserEvent = e || null;
         this.target = e ? (e.target || e.targetNode || e.srcElement) : null;
         this.deltaY = deltaY;
         this.deltaX = deltaX;
         if (e) {
             // Old (deprecated) wheel events
-            let e1 = e;
-            let e2 = e;
+            var e1 = e;
+            var e2 = e;
             // vertical delta scroll
             if (typeof e1.wheelDeltaY !== 'undefined') {
                 this.deltaY = e1.wheelDeltaY / 120;
@@ -63,15 +94,10 @@ export class StandardWheelEvent {
             else if (e.type === 'wheel') {
                 // Modern wheel event
                 // https://developer.mozilla.org/en-US/docs/Web/API/WheelEvent
-                const ev = e;
+                var ev = e;
                 if (ev.deltaMode === ev.DOM_DELTA_LINE) {
                     // the deltas are expressed in lines
-                    if (browser.isFirefox && !platform.isMacintosh) {
-                        this.deltaY = -e.deltaY / 3;
-                    }
-                    else {
-                        this.deltaY = -e.deltaY;
-                    }
+                    this.deltaY = -e.deltaY;
                 }
                 else {
                     this.deltaY = -e.deltaY / 40;
@@ -92,15 +118,10 @@ export class StandardWheelEvent {
             else if (e.type === 'wheel') {
                 // Modern wheel event
                 // https://developer.mozilla.org/en-US/docs/Web/API/WheelEvent
-                const ev = e;
+                var ev = e;
                 if (ev.deltaMode === ev.DOM_DELTA_LINE) {
                     // the deltas are expressed in lines
-                    if (browser.isFirefox && !platform.isMacintosh) {
-                        this.deltaX = -e.deltaX / 3;
-                    }
-                    else {
-                        this.deltaX = -e.deltaX;
-                    }
+                    this.deltaX = -e.deltaX;
                 }
                 else {
                     this.deltaX = -e.deltaX / 40;
@@ -112,14 +133,20 @@ export class StandardWheelEvent {
             }
         }
     }
-    preventDefault() {
+    StandardWheelEvent.prototype.preventDefault = function () {
         if (this.browserEvent) {
-            this.browserEvent.preventDefault();
+            if (this.browserEvent.preventDefault) {
+                this.browserEvent.preventDefault();
+            }
         }
-    }
-    stopPropagation() {
+    };
+    StandardWheelEvent.prototype.stopPropagation = function () {
         if (this.browserEvent) {
-            this.browserEvent.stopPropagation();
+            if (this.browserEvent.stopPropagation) {
+                this.browserEvent.stopPropagation();
+            }
         }
-    }
-}
+    };
+    return StandardWheelEvent;
+}());
+export { StandardWheelEvent };

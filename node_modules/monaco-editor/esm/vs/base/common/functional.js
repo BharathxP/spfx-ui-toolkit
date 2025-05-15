@@ -3,9 +3,9 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 export function once(fn) {
-    const _this = this;
-    let didCall = false;
-    let result;
+    var _this = this;
+    var didCall = false;
+    var result;
     return function () {
         if (didCall) {
             return result;

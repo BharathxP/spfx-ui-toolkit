@@ -2,13 +2,12 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define('vs/basic-languages/clojure/clojure',["require", "exports"], function (require, exports) {
-    "use strict";
+define(["require", "exports"], function (require, exports) {
+    'use strict';
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.language = exports.conf = void 0;
     exports.conf = {
         comments: {
-            lineComment: ';;'
+            lineComment: ';;',
         },
         brackets: [
             ['[', ']'],
@@ -19,14 +18,14 @@ define('vs/basic-languages/clojure/clojure',["require", "exports"], function (re
             { open: '[', close: ']' },
             { open: '"', close: '"' },
             { open: '(', close: ')' },
-            { open: '{', close: '}' }
+            { open: '{', close: '}' },
         ],
         surroundingPairs: [
             { open: '[', close: ']' },
             { open: '"', close: '"' },
             { open: '(', close: ')' },
-            { open: '{', close: '}' }
-        ]
+            { open: '{', close: '}' },
+        ],
     };
     exports.language = {
         defaultToken: '',
@@ -35,7 +34,7 @@ define('vs/basic-languages/clojure/clojure',["require", "exports"], function (re
         brackets: [
             { open: '[', close: ']', token: 'delimiter.square' },
             { open: '(', close: ')', token: 'delimiter.parenthesis' },
-            { open: '{', close: '}', token: 'delimiter.curly' }
+            { open: '{', close: '}', token: 'delimiter.curly' },
         ],
         constants: ['true', 'false', 'nil'],
         // delimiters: /[\\\[\]\s"#'(),;@^`{}~]|$/,
@@ -60,11 +59,11 @@ define('vs/basic-languages/clojure/clojure',["require", "exports"], function (re
             'set!',
             'throw',
             'try',
-            'var'
+            'var',
         ],
         coreSymbols: [
             '*',
-            "*'",
+            '*\'',
             '*1',
             '*2',
             '*3',
@@ -102,9 +101,9 @@ define('vs/basic-languages/clojure/clojure',["require", "exports"], function (re
             '*verbose-defrecords*',
             '*warn-on-reflection*',
             '+',
-            "+'",
+            '+\'',
             '-',
-            "-'",
+            '-\'',
             '->',
             '->>',
             '->ArrayChunk',
@@ -244,7 +243,7 @@ define('vs/basic-languages/clojure/clojure',["require", "exports"], function (re
             'create-struct',
             'cycle',
             'dec',
-            "dec'",
+            'dec\'',
             'decimal?',
             'declare',
             'dedupe',
@@ -366,7 +365,7 @@ define('vs/basic-languages/clojure/clojure',["require", "exports"], function (re
             'import',
             'in-ns',
             'inc',
-            "inc'",
+            'inc\'',
             'indexed?',
             'init-proxy',
             'inst-ms',
@@ -713,7 +712,7 @@ define('vs/basic-languages/clojure/clojure',["require", "exports"], function (re
             'with-redefs-fn',
             'xml-seq',
             'zero?',
-            'zipmap'
+            'zipmap',
         ],
         tokenizer: {
             root: [
@@ -732,36 +731,35 @@ define('vs/basic-languages/clojure/clojure',["require", "exports"], function (re
                 // reader macro characters
                 [/[#'@^`~]/, 'meta'],
                 // symbols
-                [
-                    /@qualifiedSymbols/,
-                    {
+                [/@qualifiedSymbols/, {
                         cases: {
                             '^:.+$': 'constant',
                             '@specialForms': 'keyword',
                             '@coreSymbols': 'keyword',
                             '@constants': 'constant',
-                            '@default': 'identifier'
-                        }
-                    }
-                ]
+                            '@default': 'identifier',
+                        },
+                    },
+                ],
             ],
             whitespace: [
                 [/[\s,]+/, 'white'],
                 [/;.*$/, 'comment'],
-                [/\(comment\b/, 'comment', '@comment']
+                [/\(comment\b/, 'comment', '@comment'],
             ],
             comment: [
                 [/\(/, 'comment', '@push'],
                 [/\)/, 'comment', '@pop'],
-                [/[^()]/, 'comment']
+                [/[^()]/, 'comment'],
             ],
-            string: [[/"/, 'string', '@multiLineString']],
+            string: [
+                [/"/, 'string', '@multiLineString'],
+            ],
             multiLineString: [
                 [/"/, 'string', '@popall'],
                 [/@escapes/, 'string.escape'],
                 [/./, 'string']
-            ]
-        }
+            ],
+        },
     };
 });
-

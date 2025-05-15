@@ -3,27 +3,30 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 import { illegalArgument } from './errors.js';
-class KeyCodeStrMap {
-    constructor() {
+var KeyCodeStrMap = /** @class */ (function () {
+    function KeyCodeStrMap() {
         this._keyCodeToStr = [];
         this._strToKeyCode = Object.create(null);
     }
-    define(keyCode, str) {
+    KeyCodeStrMap.prototype.define = function (keyCode, str) {
         this._keyCodeToStr[keyCode] = str;
         this._strToKeyCode[str.toLowerCase()] = keyCode;
-    }
-    keyCodeToStr(keyCode) {
+    };
+    KeyCodeStrMap.prototype.keyCodeToStr = function (keyCode) {
         return this._keyCodeToStr[keyCode];
-    }
-    strToKeyCode(str) {
+    };
+    KeyCodeStrMap.prototype.strToKeyCode = function (str) {
         return this._strToKeyCode[str.toLowerCase()] || 0 /* Unknown */;
-    }
-}
-const uiMap = new KeyCodeStrMap();
-const userSettingsUSMap = new KeyCodeStrMap();
-const userSettingsGeneralMap = new KeyCodeStrMap();
+    };
+    return KeyCodeStrMap;
+}());
+var uiMap = new KeyCodeStrMap();
+var userSettingsUSMap = new KeyCodeStrMap();
+var userSettingsGeneralMap = new KeyCodeStrMap();
 (function () {
-    function define(keyCode, uiLabel, usUserSettingsLabel = uiLabel, generalUserSettingsLabel = usUserSettingsLabel) {
+    function define(keyCode, uiLabel, usUserSettingsLabel, generalUserSettingsLabel) {
+        if (usUserSettingsLabel === void 0) { usUserSettingsLabel = uiLabel; }
+        if (generalUserSettingsLabel === void 0) { generalUserSettingsLabel = usUserSettingsLabel; }
         uiMap.define(keyCode, uiLabel);
         userSettingsUSMap.define(keyCode, usUserSettingsLabel);
         userSettingsGeneralMap.define(keyCode, generalUserSettingsLabel);
@@ -164,15 +167,15 @@ export var KeyCodeUtils;
     KeyCodeUtils.fromUserSettings = fromUserSettings;
 })(KeyCodeUtils || (KeyCodeUtils = {}));
 export function KeyChord(firstPart, secondPart) {
-    const chordPart = ((secondPart & 0x0000FFFF) << 16) >>> 0;
+    var chordPart = ((secondPart & 0x0000FFFF) << 16) >>> 0;
     return (firstPart | chordPart) >>> 0;
 }
 export function createKeybinding(keybinding, OS) {
     if (keybinding === 0) {
         return null;
     }
-    const firstPart = (keybinding & 0x0000FFFF) >>> 0;
-    const chordPart = (keybinding & 0xFFFF0000) >>> 16;
+    var firstPart = (keybinding & 0x0000FFFF) >>> 0;
+    var chordPart = (keybinding & 0xFFFF0000) >>> 16;
     if (chordPart !== 0) {
         return new ChordKeybinding([
             createSimpleKeybinding(firstPart, OS),
@@ -182,60 +185,78 @@ export function createKeybinding(keybinding, OS) {
     return new ChordKeybinding([createSimpleKeybinding(firstPart, OS)]);
 }
 export function createSimpleKeybinding(keybinding, OS) {
-    const ctrlCmd = (keybinding & 2048 /* CtrlCmd */ ? true : false);
-    const winCtrl = (keybinding & 256 /* WinCtrl */ ? true : false);
-    const ctrlKey = (OS === 2 /* Macintosh */ ? winCtrl : ctrlCmd);
-    const shiftKey = (keybinding & 1024 /* Shift */ ? true : false);
-    const altKey = (keybinding & 512 /* Alt */ ? true : false);
-    const metaKey = (OS === 2 /* Macintosh */ ? ctrlCmd : winCtrl);
-    const keyCode = (keybinding & 255 /* KeyCode */);
+    var ctrlCmd = (keybinding & 2048 /* CtrlCmd */ ? true : false);
+    var winCtrl = (keybinding & 256 /* WinCtrl */ ? true : false);
+    var ctrlKey = (OS === 2 /* Macintosh */ ? winCtrl : ctrlCmd);
+    var shiftKey = (keybinding & 1024 /* Shift */ ? true : false);
+    var altKey = (keybinding & 512 /* Alt */ ? true : false);
+    var metaKey = (OS === 2 /* Macintosh */ ? ctrlCmd : winCtrl);
+    var keyCode = (keybinding & 255 /* KeyCode */);
     return new SimpleKeybinding(ctrlKey, shiftKey, altKey, metaKey, keyCode);
 }
-export class SimpleKeybinding {
-    constructor(ctrlKey, shiftKey, altKey, metaKey, keyCode) {
+var SimpleKeybinding = /** @class */ (function () {
+    function SimpleKeybinding(ctrlKey, shiftKey, altKey, metaKey, keyCode) {
         this.ctrlKey = ctrlKey;
         this.shiftKey = shiftKey;
         this.altKey = altKey;
         this.metaKey = metaKey;
         this.keyCode = keyCode;
     }
-    equals(other) {
+    SimpleKeybinding.prototype.equals = function (other) {
         return (this.ctrlKey === other.ctrlKey
             && this.shiftKey === other.shiftKey
             && this.altKey === other.altKey
             && this.metaKey === other.metaKey
             && this.keyCode === other.keyCode);
-    }
-    isModifierKey() {
+    };
+    SimpleKeybinding.prototype.isModifierKey = function () {
         return (this.keyCode === 0 /* Unknown */
             || this.keyCode === 5 /* Ctrl */
             || this.keyCode === 57 /* Meta */
             || this.keyCode === 6 /* Alt */
             || this.keyCode === 4 /* Shift */);
-    }
-    toChord() {
+    };
+    SimpleKeybinding.prototype.toChord = function () {
         return new ChordKeybinding([this]);
-    }
+    };
     /**
      * Does this keybinding refer to the key code of a modifier and it also has the modifier flag?
      */
-    isDuplicateModifierCase() {
+    SimpleKeybinding.prototype.isDuplicateModifierCase = function () {
         return ((this.ctrlKey && this.keyCode === 5 /* Ctrl */)
             || (this.shiftKey && this.keyCode === 4 /* Shift */)
             || (this.altKey && this.keyCode === 6 /* Alt */)
             || (this.metaKey && this.keyCode === 57 /* Meta */));
-    }
-}
-export class ChordKeybinding {
-    constructor(parts) {
+    };
+    return SimpleKeybinding;
+}());
+export { SimpleKeybinding };
+var ChordKeybinding = /** @class */ (function () {
+    function ChordKeybinding(parts) {
         if (parts.length === 0) {
-            throw illegalArgument(`parts`);
+            throw illegalArgument("parts");
         }
         this.parts = parts;
     }
-}
-export class ResolvedKeybindingPart {
-    constructor(ctrlKey, shiftKey, altKey, metaKey, kbLabel, kbAriaLabel) {
+    ChordKeybinding.prototype.equals = function (other) {
+        if (other === null) {
+            return false;
+        }
+        if (this.parts.length !== other.parts.length) {
+            return false;
+        }
+        for (var i = 0; i < this.parts.length; i++) {
+            if (!this.parts[i].equals(other.parts[i])) {
+                return false;
+            }
+        }
+        return true;
+    };
+    return ChordKeybinding;
+}());
+export { ChordKeybinding };
+var ResolvedKeybindingPart = /** @class */ (function () {
+    function ResolvedKeybindingPart(ctrlKey, shiftKey, altKey, metaKey, kbLabel, kbAriaLabel) {
         this.ctrlKey = ctrlKey;
         this.shiftKey = shiftKey;
         this.altKey = altKey;
@@ -243,9 +264,15 @@ export class ResolvedKeybindingPart {
         this.keyLabel = kbLabel;
         this.keyAriaLabel = kbAriaLabel;
     }
-}
+    return ResolvedKeybindingPart;
+}());
+export { ResolvedKeybindingPart };
 /**
  * A resolved keybinding. Can be a simple keybinding or a chord keybinding.
  */
-export class ResolvedKeybinding {
-}
+var ResolvedKeybinding = /** @class */ (function () {
+    function ResolvedKeybinding() {
+    }
+    return ResolvedKeybinding;
+}());
+export { ResolvedKeybinding };

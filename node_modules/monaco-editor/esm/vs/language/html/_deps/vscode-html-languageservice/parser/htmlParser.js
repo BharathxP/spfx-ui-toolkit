@@ -16,25 +16,20 @@ var Node = /** @class */ (function () {
     }
     Object.defineProperty(Node.prototype, "attributeNames", {
         get: function () { return this.attributes ? Object.keys(this.attributes) : []; },
-        enumerable: false,
+        enumerable: true,
         configurable: true
     });
     Node.prototype.isSameTag = function (tagInLowerCase) {
-        if (this.tag === undefined) {
-            return tagInLowerCase === undefined;
-        }
-        else {
-            return tagInLowerCase !== undefined && this.tag.length === tagInLowerCase.length && this.tag.toLowerCase() === tagInLowerCase;
-        }
+        return this.tag && tagInLowerCase && this.tag.length === tagInLowerCase.length && this.tag.toLowerCase() === tagInLowerCase;
     };
     Object.defineProperty(Node.prototype, "firstChild", {
         get: function () { return this.children[0]; },
-        enumerable: false,
+        enumerable: true,
         configurable: true
     });
     Object.defineProperty(Node.prototype, "lastChild", {
         get: function () { return this.children.length ? this.children[this.children.length - 1] : void 0; },
-        enumerable: false,
+        enumerable: true,
         configurable: true
     });
     Node.prototype.findNodeBefore = function (offset) {
@@ -68,11 +63,11 @@ var Node = /** @class */ (function () {
 }());
 export { Node };
 export function parse(text) {
-    var scanner = createScanner(text, undefined, undefined, true);
+    var scanner = createScanner(text);
     var htmlDocument = new Node(0, text.length, [], void 0);
     var curr = htmlDocument;
     var endTagStart = -1;
-    var endTagName = undefined;
+    var endTagName = null;
     var pendingAttribute = null;
     var token = scanner.scan();
     while (token !== TokenType.EOS) {
@@ -86,19 +81,11 @@ export function parse(text) {
                 curr.tag = scanner.getTokenText();
                 break;
             case TokenType.StartTagClose:
-                if (curr.parent) {
-                    curr.end = scanner.getTokenEnd(); // might be later set to end tag position
-                    if (scanner.getTokenLength()) {
-                        curr.startTagEnd = scanner.getTokenEnd();
-                        if (curr.tag && isVoidElement(curr.tag)) {
-                            curr.closed = true;
-                            curr = curr.parent;
-                        }
-                    }
-                    else {
-                        // pseudo close token from an incomplete start tag
-                        curr = curr.parent;
-                    }
+                curr.end = scanner.getTokenEnd(); // might be later set to end tag position
+                curr.startTagEnd = scanner.getTokenEnd();
+                if (curr.tag && isVoidElement(curr.tag) && curr.parent) {
+                    curr.closed = true;
+                    curr = curr.parent;
                 }
                 break;
             case TokenType.StartTagSelfClose:
@@ -111,27 +98,29 @@ export function parse(text) {
                 break;
             case TokenType.EndTagOpen:
                 endTagStart = scanner.getTokenOffset();
-                endTagName = undefined;
+                endTagName = null;
                 break;
             case TokenType.EndTag:
                 endTagName = scanner.getTokenText().toLowerCase();
                 break;
             case TokenType.EndTagClose:
-                var node = curr;
-                // see if we can find a matching tag
-                while (!node.isSameTag(endTagName) && node.parent) {
-                    node = node.parent;
-                }
-                if (node.parent) {
-                    while (curr !== node) {
-                        curr.end = endTagStart;
-                        curr.closed = false;
+                if (endTagName) {
+                    var node = curr;
+                    // see if we can find a matching tag
+                    while (!node.isSameTag(endTagName) && node.parent) {
+                        node = node.parent;
+                    }
+                    if (node.parent) {
+                        while (curr !== node) {
+                            curr.end = endTagStart;
+                            curr.closed = false;
+                            curr = curr.parent;
+                        }
+                        curr.closed = true;
+                        curr.endTagStart = endTagStart;
+                        curr.end = scanner.getTokenEnd();
                         curr = curr.parent;
                     }
-                    curr.closed = true;
-                    curr.endTagStart = endTagStart;
-                    curr.end = scanner.getTokenEnd();
-                    curr = curr.parent;
                 }
                 break;
             case TokenType.AttributeName: {

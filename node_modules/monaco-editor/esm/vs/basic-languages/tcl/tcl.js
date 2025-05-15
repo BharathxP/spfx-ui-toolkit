@@ -2,6 +2,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+'use strict';
 export var conf = {
     brackets: [
         ['{', '}'],
@@ -13,139 +14,44 @@ export var conf = {
         { open: '[', close: ']' },
         { open: '(', close: ')' },
         { open: '"', close: '"' },
-        { open: "'", close: "'" }
+        { open: '\'', close: '\'' },
     ],
     surroundingPairs: [
         { open: '{', close: '}' },
         { open: '[', close: ']' },
         { open: '(', close: ')' },
         { open: '"', close: '"' },
-        { open: "'", close: "'" }
+        { open: '\'', close: '\'' },
     ]
 };
 export var language = {
     tokenPostfix: '.tcl',
     specialFunctions: [
-        'set',
-        'unset',
-        'rename',
-        'variable',
-        'proc',
-        'coroutine',
+        'set', 'unset', 'rename', 'variable', 'proc', 'coroutine',
         'foreach',
-        'incr',
-        'append',
-        'lappend',
-        'linsert',
-        'lreplace'
+        'incr', 'append',
+        'lappend', 'linsert', 'lreplace'
     ],
     mainFunctions: [
-        'if',
-        'then',
-        'elseif',
-        'else',
-        'case',
-        'switch',
-        'while',
-        'for',
-        'break',
-        'continue',
-        'return',
-        'package',
-        'namespace',
-        'catch',
-        'exit',
-        'eval',
-        'expr',
-        'uplevel',
-        'upvar'
+        'if', 'then', 'elseif', 'else', 'case', 'switch', 'while', 'for',
+        'break', 'continue', 'return',
+        'package', 'namespace',
+        'catch', 'exit',
+        'eval', 'expr', 'uplevel', 'upvar'
     ],
     builtinFunctions: [
-        'file',
-        'info',
-        'concat',
-        'join',
-        'lindex',
-        'list',
-        'llength',
-        'lrange',
-        'lsearch',
-        'lsort',
-        'split',
-        'array',
-        'parray',
-        'binary',
-        'format',
-        'regexp',
-        'regsub',
-        'scan',
-        'string',
-        'subst',
-        'dict',
-        'cd',
-        'clock',
-        'exec',
-        'glob',
-        'pid',
-        'pwd',
-        'close',
-        'eof',
-        'fblocked',
-        'fconfigure',
-        'fcopy',
-        'fileevent',
-        'flush',
-        'gets',
-        'open',
-        'puts',
-        'read',
-        'seek',
-        'socket',
-        'tell',
-        'interp',
-        'after',
-        'auto_execok',
-        'auto_load',
-        'auto_mkindex',
-        'auto_reset',
-        'bgerror',
-        'error',
-        'global',
-        'history',
-        'load',
-        'source',
-        'time',
-        'trace',
-        'unknown',
-        'unset',
-        'update',
-        'vwait',
-        'winfo',
-        'wm',
-        'bind',
-        'event',
-        'pack',
-        'place',
-        'grid',
-        'font',
-        'bell',
-        'clipboard',
-        'destroy',
-        'focus',
-        'grab',
-        'lower',
-        'option',
-        'raise',
-        'selection',
-        'send',
-        'tk',
-        'tkwait',
-        'tk_bisque',
-        'tk_focusNext',
-        'tk_focusPrev',
-        'tk_focusFollowsMouse',
-        'tk_popup',
-        'tk_setPalette'
+        'file', 'info', 'concat', 'join', 'lindex',
+        'list', 'llength', 'lrange', 'lsearch', 'lsort', 'split',
+        'array', 'parray', 'binary', 'format', 'regexp', 'regsub', 'scan', 'string',
+        'subst', 'dict', 'cd', 'clock', 'exec', 'glob', 'pid', 'pwd', 'close', 'eof', 'fblocked',
+        'fconfigure', 'fcopy', 'fileevent', 'flush', 'gets', 'open', 'puts', 'read', 'seek',
+        'socket', 'tell', 'interp', 'after', 'auto_execok',
+        'auto_load', 'auto_mkindex', 'auto_reset', 'bgerror', 'error',
+        'global', 'history', 'load', 'source', 'time', 'trace',
+        'unknown', 'unset', 'update', 'vwait', 'winfo', 'wm', 'bind', 'event',
+        'pack', 'place', 'grid', 'font', 'bell', 'clipboard', 'destroy', 'focus', 'grab', 'lower',
+        'option', 'raise', 'selection', 'send', 'tk', 'tkwait', 'tk_bisque', 'tk_focusNext',
+        'tk_focusPrev', 'tk_focusFollowsMouse', 'tk_popup', 'tk_setPalette'
     ],
     symbols: /[=><!~?:&|+\-*\/\^%]+/,
     brackets: [
@@ -158,20 +64,12 @@ export var language = {
     tokenizer: {
         root: [
             // identifiers and keywords
-            [
-                /[a-zA-Z_]\w*/,
-                {
-                    cases: {
-                        '@specialFunctions': {
-                            token: 'keyword.flow',
-                            next: '@specialFunc'
-                        },
+            [/[a-zA-Z_]\w*/, { cases: {
+                        '@specialFunctions': { token: 'keyword.flow', next: '@specialFunc' },
                         '@mainFunctions': 'keyword',
                         '@builtinFunctions': 'variable',
                         '@default': 'operator.scss'
-                    }
-                }
-            ],
+                    } }],
             [/\s+\-+(?!\d|\.)\w*|{\*}/, 'metatag'],
             // whitespace
             { include: '@whitespace' },
@@ -196,7 +94,7 @@ export var language = {
             [/@variables/, 'type.identifier'],
             [/[^\\$\[\]"]+/, 'string'],
             [/@escapes/, 'string.escape'],
-            [/"/, { token: 'string.quote', bracket: '@close', next: '@pop' }]
+            [/"/, { token: 'string.quote', bracket: '@close', next: '@pop' }],
         ],
         sstring: [
             [/\[/, { token: '@brackets', next: '@nestedCall' }],
@@ -227,7 +125,7 @@ export var language = {
         specialFunc: [
             [/"/, { token: 'string', next: '@dstring' }],
             [/'/, { token: 'string', next: '@sstring' }],
-            [/\S+/, { token: 'type', next: '@pop' }]
+            [/\S+/, { token: 'type', next: '@pop' }],
         ]
     }
 };

@@ -2,10 +2,9 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-define('vs/basic-languages/graphql/graphql',["require", "exports"], function (require, exports) {
-    "use strict";
+define(["require", "exports"], function (require, exports) {
+    'use strict';
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.language = exports.conf = void 0;
     exports.conf = {
         comments: {
             lineComment: '#'
@@ -20,14 +19,14 @@ define('vs/basic-languages/graphql/graphql',["require", "exports"], function (re
             { open: '[', close: ']' },
             { open: '(', close: ')' },
             { open: '"""', close: '"""', notIn: ['string', 'comment'] },
-            { open: '"', close: '"', notIn: ['string', 'comment'] }
+            { open: '"', close: '"', notIn: ['string', 'comment'] },
         ],
         surroundingPairs: [
             { open: '{', close: '}' },
             { open: '[', close: ']' },
             { open: '(', close: ')' },
             { open: '"""', close: '"""' },
-            { open: '"', close: '"' }
+            { open: '"', close: '"' },
         ],
         folding: {
             offSide: true
@@ -38,46 +37,18 @@ define('vs/basic-languages/graphql/graphql',["require", "exports"], function (re
         defaultToken: 'invalid',
         tokenPostfix: '.gql',
         keywords: [
-            'null',
-            'true',
-            'false',
-            'query',
-            'mutation',
-            'subscription',
-            'extend',
-            'schema',
-            'directive',
-            'scalar',
-            'type',
-            'interface',
-            'union',
-            'enum',
-            'input',
-            'implements',
-            'fragment',
-            'on'
+            'null', 'true', 'false',
+            'query', 'mutation', 'subscription',
+            'extend', 'schema', 'directive',
+            'scalar', 'type', 'interface', 'union', 'enum', 'input', 'implements',
+            'fragment', 'on',
         ],
         typeKeywords: ['Int', 'Float', 'String', 'Boolean', 'ID'],
         directiveLocations: [
-            'SCHEMA',
-            'SCALAR',
-            'OBJECT',
-            'FIELD_DEFINITION',
-            'ARGUMENT_DEFINITION',
-            'INTERFACE',
-            'UNION',
-            'ENUM',
-            'ENUM_VALUE',
-            'INPUT_OBJECT',
-            'INPUT_FIELD_DEFINITION',
-            'QUERY',
-            'MUTATION',
-            'SUBSCRIPTION',
-            'FIELD',
-            'FRAGMENT_DEFINITION',
-            'FRAGMENT_SPREAD',
-            'INLINE_FRAGMENT',
-            'VARIABLE_DEFINITION'
+            'SCHEMA', 'SCALAR', 'OBJECT', 'FIELD_DEFINITION', 'ARGUMENT_DEFINITION',
+            'INTERFACE', 'UNION', 'ENUM', 'ENUM_VALUE', 'INPUT_OBJECT', 'INPUT_FIELD_DEFINITION',
+            'QUERY', 'MUTATION', 'SUBSCRIPTION', 'FIELD', 'FRAGMENT_DEFINITION',
+            'FRAGMENT_SPREAD', 'INLINE_FRAGMENT', 'VARIABLE_DEFINITION',
         ],
         operators: ['=', '!', '?', ':', '&', '|'],
         // we include these common regular expressions
@@ -93,9 +64,9 @@ define('vs/basic-languages/graphql/graphql',["require", "exports"], function (re
                     {
                         cases: {
                             '@keywords': 'keyword',
-                            '@default': 'key.identifier'
-                        }
-                    }
+                            '@default': 'key.identifier',
+                        },
+                    },
                 ],
                 // identify typed input variables
                 [
@@ -103,9 +74,9 @@ define('vs/basic-languages/graphql/graphql',["require", "exports"], function (re
                     {
                         cases: {
                             '@keywords': 'keyword',
-                            '@default': 'argument.identifier'
-                        }
-                    }
+                            '@default': 'argument.identifier',
+                        },
+                    },
                 ],
                 // to show class names nicely
                 [
@@ -113,29 +84,37 @@ define('vs/basic-languages/graphql/graphql',["require", "exports"], function (re
                     {
                         cases: {
                             '@typeKeywords': 'keyword',
-                            '@default': 'type.identifier'
-                        }
-                    }
+                            '@default': 'type.identifier',
+                        },
+                    },
                 ],
                 // whitespace
                 { include: '@whitespace' },
                 // delimiters and operators
                 [/[{}()\[\]]/, '@brackets'],
-                [/@symbols/, { cases: { '@operators': 'operator', '@default': '' } }],
+                [
+                    /@symbols/,
+                    { cases: { '@operators': 'operator', '@default': '' } },
+                ],
                 // @ annotations.
                 // As an example, we emit a debugging log message on these tokens.
                 // Note: message are supressed during the first load -- change some lines to see them.
-                [/@\s*[a-zA-Z_\$][\w\$]*/, { token: 'annotation', log: 'annotation token: $0' }],
+                [
+                    /@\s*[a-zA-Z_\$][\w\$]*/,
+                    { token: 'annotation', log: 'annotation token: $0' },
+                ],
                 // numbers
                 [/\d*\.\d+([eE][\-+]?\d+)?/, 'number.float'],
                 [/0[xX][0-9a-fA-F]+/, 'number.hex'],
                 [/\d+/, 'number'],
                 // delimiter: after number because of .\d floats
                 [/[;,.]/, 'delimiter'],
-                [/"""/, { token: 'string', next: '@mlstring', nextEmbedded: 'markdown' }],
+                [/"""/,
+                    { token: 'string', next: '@mlstring', nextEmbedded: 'markdown' }
+                ],
                 // strings
                 [/"([^"\\]|\\.)*$/, 'string.invalid'],
-                [/"/, { token: 'string.quote', bracket: '@open', next: '@string' }]
+                [/"/, { token: 'string.quote', bracket: '@open', next: '@string' }],
             ],
             mlstring: [
                 [/[^"]+/, 'string'],
@@ -145,13 +124,9 @@ define('vs/basic-languages/graphql/graphql',["require", "exports"], function (re
                 [/[^\\"]+/, 'string'],
                 [/@escapes/, 'string.escape'],
                 [/\\./, 'string.escape.invalid'],
-                [/"/, { token: 'string.quote', bracket: '@close', next: '@pop' }]
+                [/"/, { token: 'string.quote', bracket: '@close', next: '@pop' }],
             ],
-            whitespace: [
-                [/[ \t\r\n]+/, ''],
-                [/#.*$/, 'comment']
-            ]
-        }
+            whitespace: [[/[ \t\r\n]+/, ''], [/#.*$/, 'comment']],
+        },
     };
 });
-
