@@ -33,9 +33,9 @@ const datePickerStyle: Partial<IDatePickerStyles> = {
 
 export const DateInput = ({
   label = '',
-  value,
+  value='',
   onChange,
-  placeholder,
+  placeholder='',
   required = true,
   errorMessage = '',
   isPreview = false,

@@ -6,6 +6,7 @@ export const DropDownSelect = ({
   label,
   options,
   selectedKey,
+  placeholder='',
   onChange,
   required,
   errorMessage = '',
@@ -45,7 +46,7 @@ export const DropDownSelect = ({
           <Dropdown
             selectedKey={selectedKey}
             onChange={(_event, option) => handleChange(option)}
-            placeholder='Select an option'
+            placeholder={placeholder}
             options={options}
             className='ToolKitDropDown'
             disabled={disabled}
